@@ -6,15 +6,32 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.List;
 
-@NoArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@Getter
+@Setter
+@Entity
+@Table(name = "tasks")
 public class Task
         extends BaseEntity {
 
+    @Column
     private String name;
+
+    @OneToOne
+    @JoinColumn(name = "manager_id")
     private User manager;
+
+    @OneToMany
+    @JoinTable(name = "tasks_developers", joinColumns = {
+            @JoinColumn(name = "developer_id", referencedColumnName = "id"),
+            @JoinColumn(name = "task_id", referencedColumnName = "id")
+    })
     private List<User> developers;
+
+    @Enumerated(EnumType.STRING)
     private Status status;
 
 }
