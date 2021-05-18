@@ -21,8 +21,7 @@ public class Project
     private String name;
 
     @Column
-    @OneToMany
-    @JoinColumn(name = "project_id")
+    @OneToMany(mappedBy = "project")
     private List<Task> tasks;
 
     @OneToOne

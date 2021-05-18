@@ -31,7 +31,11 @@ public class Task
     })
     private List<User> developers;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column
+    private Integer status;
+
+    @ManyToOne
+    @JoinColumn(name = "project_id")
+    private Project project;
 
 }
