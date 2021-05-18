@@ -1,1 +1,14 @@
-
+spring:
+  datasource:
+    url: 'jdbc:h2:mem:expenses'
+    driver-class-name: 'org.h2.Driver'
+    username: 'sa'
+    password: 'password'
+    data: 'classpath*:database/data.sql'
+    schema: 'classpath*:database/schema.sql'
+  profiles:
+    active: 'dev'
+  h2:
+    console:
+      enabled: true
+      path: '/h2-console'
