@@ -3,6 +3,8 @@ DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS tasks_developers;
 DROP TABLE IF EXISTS statuses;
 DROP TABLE IF EXISTS tasks;
+DROP TABLE IF EXISTS projects_tasks;
+DROP TABLE IF EXISTS projects;
 
 
 CREATE TABLE roles
@@ -43,4 +45,21 @@ CREATE TABLE tasks_developers
     developer_id    INT                     NOT NULL,
     foreign key (task_id) references tasks(id),
     foreign key (developer_id) references users(id)
+);
+
+
+CREATE TABLE projects
+(
+    id              IDENTITY                PRIMARY KEY NOT NULL,
+    name            VARCHAR                 NOT NULL,
+    manager_id      INT                     NOT NULL,
+    foreign key (manager_id) references users(id)
+);
+
+CREATE TABLE projects_tasks
+(
+    project_id      INT                     NOT NULL,
+    task_id         INT                     NOT NULL,
+    foreign key (project_id) references projects(id),
+    foreign key (task_id) references tasks(id)
 );
