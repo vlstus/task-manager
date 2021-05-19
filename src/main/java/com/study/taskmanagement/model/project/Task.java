@@ -6,15 +6,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.*;
 import java.util.List;
 
-@NoArgsConstructor @Getter @Setter
+@NoArgsConstructor
+@Getter
+@Setter
+@Entity
+@Table(name = "tasks")
 public class Task
         extends BaseEntity {
 
+    @Column
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
     private User manager;
-    private List<User> developers;
+    @OneToOne
+    @JoinColumn(name = "status_id")
     private Status status;
+//    private List<User> developers;
+
 
 }

@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS roles;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS statuses;
+DROP TABLE IF EXISTS tasks;
 
 
 CREATE TABLE roles
@@ -8,7 +10,6 @@ CREATE TABLE roles
     type            VARCHAR                 NOT NULL
 );
 
-
 CREATE TABLE users
 (
     id              IDENTITY                PRIMARY KEY NOT NULL,
@@ -16,4 +17,21 @@ CREATE TABLE users
     password        VARCHAR                 NOT NULL,
     role_id         INT                     NOT NULL,
     foreign key (role_id) references roles (id)
+);
+
+
+CREATE TABLE statuses
+(
+    id              IDENTITY                PRIMARY KEY NOT NULL,
+    type            VARCHAR                 NOT NULL
+);
+
+CREATE TABLE tasks
+(
+    id              IDENTITY                PRIMARY KEY NOT NULL,
+    name            VARCHAR                 NOT NULL,
+    status_id       INT                     NOT NULL,
+    manager_id      INT                     NOT NULL,
+    foreign key (status_id) references statuses(id),
+    foreign key (manager_id) references users(id)
 );
