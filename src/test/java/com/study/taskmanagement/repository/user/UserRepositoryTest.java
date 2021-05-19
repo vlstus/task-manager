@@ -56,6 +56,13 @@ class UserRepositoryTest
                 .isEqualTo(UPDATED_NAME);
     }
 
+    @Test
+    void delete() {
+        userRepository.deleteById(TEST_MANAGER_ID);
+        assertThat(userRepository.findById(TEST_MANAGER_ID))
+                .isEmpty();
+    }
+
 
     private int getRoleId(Role role) {
         return roleRepository.findByRoleType(role.getRoleType())

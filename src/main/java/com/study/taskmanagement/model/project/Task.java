@@ -2,6 +2,7 @@ package com.study.taskmanagement.model.project;
 
 import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.model.user.User;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,6 +18,7 @@ import javax.persistence.Table;
 import java.util.List;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Entity

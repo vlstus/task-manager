@@ -10,6 +10,7 @@ import java.util.List;
 public final class UserTestData {
 
     public static final int TEST_DEVELOPER_ID = 100_000;
+    public static final int TEST_MANAGER_ID = 100_001;
     public static final User TEST_DEVELOPER = new User("John Doe", "Password", Role.ofType("DEVELOPER"));
     public static final User TEST_MANAGER = new User("Jane Doe", "Password", Role.ofType("MANAGER"));
 
@@ -26,6 +27,15 @@ public final class UserTestData {
         User updated = new User(UPDATED_NAME, TEST_DEVELOPER.getPassword(), TEST_DEVELOPER.getRole());
         updated.setId(TEST_DEVELOPER_ID);
         return updated;
+    }
+
+    public static User copyOf(User user) {
+        User copy = new User();
+        copy.setId(user.getId());
+        copy.setName(user.getName());
+        copy.setPassword(user.getPassword());
+        copy.setRole(user.getRole());
+        return copy;
     }
 
 }
