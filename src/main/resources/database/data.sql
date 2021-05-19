@@ -17,13 +17,15 @@ INSERT INTO roles (type) VALUES
 );
 
 
-INSERT INTO users (name,password,role_id) VALUES
+INSERT INTO users (id,name,password,role_id) VALUES
 (
+100000,
 'John Doe',
 'Password',
 (SELECT id FROM roles WHERE roles.type = 'DEVELOPER')
 ),
 (
+100001,
 'Jane Doe',
 'Password',
 (SELECT id FROM roles WHERE roles.type = 'MANAGER')
@@ -41,8 +43,9 @@ INSERT INTO statuses (type) VALUES
 'DONE'
 );
 
-INSERT INTO tasks (name,status_id,manager_id) VALUES
+INSERT INTO tasks (id,name,status_id,manager_id) VALUES
 (
+100000,
 'DESIGN DOMAIN MODEL',
 (SELECT id FROM statuses WHERE statuses.type = 'IN_PROGRESS'),
 (SELECT id FROM users WHERE users.role_id = (SELECT id FROM roles WHERE roles.type = 'MANAGER') AND users.name = 'Jane Doe')
@@ -54,8 +57,9 @@ INSERT INTO tasks_developers (task_id,developer_id) VALUES
 (SELECT id FROM tasks WHERE tasks.name = 'DESIGN DOMAIN MODEL')
 );
 
-INSERT INTO projects (name,manager_id) VALUES
+INSERT INTO projects (id,name,manager_id) VALUES
 (
+100000,
 'Task Management',
 (SELECT id FROM users WHERE users.role_id = (SELECT id FROM roles WHERE roles.type = 'MANAGER') AND users.name = 'Jane Doe')
 );
