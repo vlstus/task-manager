@@ -25,7 +25,21 @@ public class Task
     @OneToOne
     @JoinColumn(name = "status_id")
     private Status status;
-//    private List<User> developers;
+    @OneToMany
+    @JoinTable(
+            name = "tasks_developers",
+            joinColumns = {
+                    @JoinColumn(
+                            name = "task_id"
+                    )
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(
+                            name = "developer_id"
+                    )
+            }
+    )
+    private List<User> developers;
 
 
 }
