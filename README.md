@@ -16,3 +16,12 @@ Project/tasks management application
 Экраны: Логин, Список Юзеров(Админ), Список проектов(Менджер, Юзер), Список тасков,  Детали юзера, детали проекта, детали таска, для всех страниц имеются общая для создания и редактирования форма, и для просмотра.
 
 Начинаем эту задачу только (первая фаза) с дата модели, с использованием JPA , проект можешьсрзау создать под спринг + градл, под моделю понимается модель , репозитории и тесты
+
+
+# Class Diagram
+
+![Classes Diagram](https://app.genmymodel.com/api/projects/_z9KxILe0EeuARqq-icHx7Q/diagrams/_DqPHEJvOEDmqOYW0sBqprw/jpeg)
+
+# DB Scheme
+
+![DB Diagram](https://pichost.net/i/2021/05/20/db_diagram-279f31f4beee6e1e6.png)
