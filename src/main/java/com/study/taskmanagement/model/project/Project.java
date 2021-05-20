@@ -7,44 +7,25 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
+@NoArgsConstructor @AllArgsConstructor
+@Getter @Setter
 @Entity
 @Table(name = "projects")
 public class Project
         extends BaseEntity {
 
-    @Column
     private String name;
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private User manager;
-    @OneToMany
-    @JoinTable(
-            name = "projects_tasks",
-            joinColumns = {
-                    @JoinColumn(
-                            name = "project_id"
-                    )
-            },
-            inverseJoinColumns = {
-                    @JoinColumn(
-                            name = "task_id"
-                    )
-            }
-    )
+    @OneToMany(mappedBy = "project")
     private List<Task> tasks;
-
 
 }

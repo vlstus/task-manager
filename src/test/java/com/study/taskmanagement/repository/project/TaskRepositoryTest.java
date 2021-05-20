@@ -2,16 +2,12 @@ package com.study.taskmanagement.repository.project;
 
 import com.study.taskmanagement.model.project.Status;
 import com.study.taskmanagement.model.project.Task;
-import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.BaseRepositoryTest;
-import com.study.taskmanagement.repository.exception.RepositoryLayerException;
 import com.study.taskmanagement.repository.user.UserTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Collections;
-
-import static com.study.taskmanagement.repository.project.ProjectTestData.*;
+import static com.study.taskmanagement.repository.project.ProjectTestData.TaskTestData;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskRepositoryTest
@@ -19,8 +15,6 @@ class TaskRepositoryTest
 
     @Autowired
     TaskRepository taskRepository;
-    @Autowired
-    StatusRepository statusRepository;
 
     @Test
     void findAll() {
@@ -35,7 +29,7 @@ class TaskRepositoryTest
                 .hasValueSatisfying(task ->
                         assertThat(task)
                                 .usingRecursiveComparison()
-                                .ignoringFields("id", "status.id", "manager", "developers")
+                                .ignoringFields("id", "manager", "status", "developer", "project")
                                 .isEqualTo(TaskTestData.TEST_TASK));
     }
 
@@ -44,8 +38,9 @@ class TaskRepositoryTest
         final String newTaskName = "Implement business logic";
         Task newTask = new Task(newTaskName,
                 UserTestData.TEST_MANAGER,
-                StatusTestData.TEST_STATUS,
-                Collections.singletonList(UserTestData.copyOf(UserTestData.TEST_DEVELOPER)));
+                Status.TO_DO,
+                UserTestData.TEST_DEVELOPER,
+                ProjectTestData.TEST_PROJECT);
         assertThat(taskRepository.save(newTask))
                 .hasFieldOrPropertyWithValue("name", newTaskName);
     }

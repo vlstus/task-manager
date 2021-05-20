@@ -15,15 +15,9 @@ public final class UserTestData {
         public static final int MANAGER_ROLE_ID = DEVELOPER_ROLE_ID + 1;
         public static final int ADMIN_ROLE_ID = MANAGER_ROLE_ID + 1;
 
-        public static final Role DEVELOPER_ROLE = Role.ofType("DEVELOPER");
-        public static final Role MANAGER_ROLE = Role.ofType("MANAGER");
-        public static final Role ADMIN_ROLE = Role.ofType("ADMIN");
-
-        static {
-            DEVELOPER_ROLE.setId(DEVELOPER_ROLE_ID);
-            MANAGER_ROLE.setId(MANAGER_ROLE_ID);
-            ADMIN_ROLE.setId(ADMIN_ROLE_ID);
-        }
+        public static final Role DEVELOPER_ROLE = Role.valueOf("DEVELOPER");
+        public static final Role MANAGER_ROLE = Role.valueOf("MANAGER");
+        public static final Role ADMIN_ROLE = Role.valueOf("ADMIN");
 
     }
 

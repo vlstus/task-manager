@@ -16,26 +16,15 @@ import static com.study.taskmanagement.repository.user.UserTestData.TEST_MANAGER
 
 public final class ProjectTestData {
 
-    public static final class StatusTestData {
-
-        public static final int TEST_STATUS_ID = 100_000;
-
-        public static final Status TEST_STATUS = Status.ofType("TO_DO");
-
-        static {
-            TEST_STATUS.setId(TEST_STATUS_ID);
-        }
-
-    }
-
     public static final class TaskTestData {
 
         public static final int TEST_TASK_ID = 100_000;
 
         public static final Task TEST_TASK = new Task("DESIGN DOMAIN MODEL",
-                UserTestData.copyOf(TEST_MANAGER),
-                StatusTestData.TEST_STATUS,
-                new ArrayList<>(Collections.singletonList(UserTestData.copyOf(TEST_DEVELOPER))));
+                TEST_MANAGER,
+                Status.TO_DO,
+                TEST_DEVELOPER,
+                TEST_PROJECT);
 
         static {
             TEST_TASK.setId(TEST_TASK_ID);
@@ -48,9 +37,7 @@ public final class ProjectTestData {
             copy.setStatus(task.getStatus());
             copy.setManager(UserTestData.copyOf(task.getManager()));
             copy.getManager().setId(UserTestData.TEST_MANAGER_ID);
-            List<User> developersCopy = new ArrayList<>();
-            task.getDevelopers().forEach(developer -> developersCopy.add(UserTestData.copyOf(developer)));
-            copy.setDevelopers(developersCopy);
+            copy.setDeveloper(task.getDeveloper());
             return copy;
         }
 
@@ -59,8 +46,8 @@ public final class ProjectTestData {
     public static final int TEST_PROJECT_ID = 100_000;
 
     public static final Project TEST_PROJECT = new Project("Task Management",
-            UserTestData.copyOf(TEST_MANAGER),
-            new ArrayList<>(Collections.singletonList(TaskTestData.copyOf(TEST_TASK))));
+            TEST_MANAGER,
+            new ArrayList<>(Collections.singletonList(TEST_TASK)));
 
     static {
         TEST_PROJECT.setId(TEST_PROJECT_ID);
