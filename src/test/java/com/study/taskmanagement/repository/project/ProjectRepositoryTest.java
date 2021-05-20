@@ -29,7 +29,7 @@ class ProjectRepositoryTest
                 .hasValueSatisfying(project ->
                         assertThat(project)
                                 .usingRecursiveComparison()
-                                .ignoringFields("id", "manager.id", "manager.role.id", "tasks")
+                                .ignoringFields("id", "manager", "tasks")
                                 .isEqualTo(ProjectTestData.TEST_PROJECT));
     }
 
