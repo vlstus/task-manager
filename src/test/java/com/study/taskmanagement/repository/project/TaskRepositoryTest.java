@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 
+import static com.study.taskmanagement.repository.project.ProjectTestData.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class TaskRepositoryTest
@@ -29,47 +30,40 @@ class TaskRepositoryTest
 
     @Test
     void findById() {
-        assertThat(taskRepository.findById(ProjectTestData.TaskTestData.TEST_TASK_ID))
+        assertThat(taskRepository.findById(TaskTestData.TEST_TASK_ID))
                 .isPresent()
                 .hasValueSatisfying(task ->
                         assertThat(task)
                                 .usingRecursiveComparison()
                                 .ignoringFields("id", "status.id", "manager", "developers")
-                                .isEqualTo(ProjectTestData.TaskTestData.TEST_TASK));
+                                .isEqualTo(TaskTestData.TEST_TASK));
     }
 
     @Test
     void create() {
-        User testManager = UserTestData.copyOf(UserTestData.TEST_MANAGER);
-        testManager.setId(UserTestData.TEST_MANAGER_ID);
-        Status newStatus = Status.ofType("TO_DO");
-        newStatus.setId(getStatusId(newStatus));
-        Task newTask = new Task("Implement business logic",
-                testManager,
-                newStatus,
+        final String newTaskName = "Implement business logic";
+        Task newTask = new Task(newTaskName,
+                UserTestData.TEST_MANAGER,
+                StatusTestData.TEST_STATUS,
                 Collections.singletonList(UserTestData.copyOf(UserTestData.TEST_DEVELOPER)));
-        taskRepository.save(newTask);
+        assertThat(taskRepository.save(newTask))
+                .hasFieldOrPropertyWithValue("name", newTaskName);
     }
 
     @Test
     void update() {
-        Task updated = ProjectTestData.TaskTestData.getUpdated();
-        updated.getStatus().setId(getStatusId(updated.getStatus()));
+        final String updatedTaskName = "Updated Task";
+        final Task updated = TaskTestData.copyOf(TaskTestData.TEST_TASK);
+        updated.setName(updatedTaskName);
         assertThat(taskRepository.save(updated))
-                .extracting(Task::getName)
-                .isEqualTo(ProjectTestData.TaskTestData.UPDATED_NAME);
+                .hasFieldOrPropertyWithValue("name", updatedTaskName);
     }
 
     @Test
     void delete() {
-        taskRepository.deleteById(ProjectTestData.TaskTestData.TEST_TASK_ID);
-        assertThat(taskRepository.findById(ProjectTestData.TaskTestData.TEST_TASK_ID))
+        taskRepository.deleteById(TaskTestData.TEST_TASK_ID);
+        assertThat(taskRepository.findById(TaskTestData.TEST_TASK_ID))
                 .isEmpty();
-    }
-
-    private int getStatusId(Status status) {
-        return statusRepository.findByStatusType(status.getStatusType())
-                .orElseThrow(RepositoryLayerException::new).getId();
     }
 
 }

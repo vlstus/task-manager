@@ -1,16 +1,13 @@
 package com.study.taskmanagement.repository.project;
 
 import com.study.taskmanagement.model.project.Project;
-import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.BaseRepositoryTest;
-import com.study.taskmanagement.repository.user.UserTestData;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 
 import static com.study.taskmanagement.repository.user.UserTestData.TEST_MANAGER;
-import static com.study.taskmanagement.repository.user.UserTestData.TEST_MANAGER_ID;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ProjectRepositoryTest
@@ -38,9 +35,7 @@ class ProjectRepositoryTest
 
     @Test
     void create() {
-        User manager = UserTestData.copyOf(TEST_MANAGER);
-        manager.setId(TEST_MANAGER_ID);
-        Project newProject = new Project("CRUD app", manager, Collections.emptyList());
+        final Project newProject = new Project("CRUD app", TEST_MANAGER, Collections.emptyList());
         assertThat(projectRepository.save(newProject))
                 .extracting(Project::getName)
                 .isEqualTo("CRUD app");
@@ -48,11 +43,11 @@ class ProjectRepositoryTest
 
     @Test
     void update() {
-        Project updated = ProjectTestData.getUpdated();
-        updated.getManager().setId(TEST_MANAGER_ID);
+        final String updateName = "Updated Project";
+        Project updated = ProjectTestData.copyOf(ProjectTestData.TEST_PROJECT);
+        updated.setName(updateName);
         assertThat(projectRepository.save(updated))
-                .extracting(Project::getName)
-                .isEqualTo(ProjectTestData.UPDATED_NAME);
+                .hasFieldOrPropertyWithValue("name", updateName);
     }
 
     @Test

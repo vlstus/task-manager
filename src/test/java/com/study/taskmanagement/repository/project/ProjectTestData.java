@@ -16,21 +16,29 @@ import static com.study.taskmanagement.repository.user.UserTestData.TEST_MANAGER
 
 public final class ProjectTestData {
 
+    public static final class StatusTestData {
+
+        public static final int TEST_STATUS_ID = 100_000;
+
+        public static final Status TEST_STATUS = Status.ofType("TO_DO");
+
+        static {
+            TEST_STATUS.setId(TEST_STATUS_ID);
+        }
+
+    }
+
     public static final class TaskTestData {
 
         public static final int TEST_TASK_ID = 100_000;
 
-        public static final String UPDATED_NAME = "DESIGN VIEW LAYER";
-
         public static final Task TEST_TASK = new Task("DESIGN DOMAIN MODEL",
                 UserTestData.copyOf(TEST_MANAGER),
-                Status.ofType("IN_PROGRESS"),
+                StatusTestData.TEST_STATUS,
                 new ArrayList<>(Collections.singletonList(UserTestData.copyOf(TEST_DEVELOPER))));
 
-        public static Task getUpdated() {
-            final Task copy = copyOf(TEST_TASK);
-            copy.setName(UPDATED_NAME);
-            return copy;
+        static {
+            TEST_TASK.setId(TEST_TASK_ID);
         }
 
         public static Task copyOf(Task task) {
@@ -50,16 +58,12 @@ public final class ProjectTestData {
 
     public static final int TEST_PROJECT_ID = 100_000;
 
-    public static final String UPDATED_NAME = "Banking";
-
     public static final Project TEST_PROJECT = new Project("Task Management",
             UserTestData.copyOf(TEST_MANAGER),
             new ArrayList<>(Collections.singletonList(TaskTestData.copyOf(TEST_TASK))));
 
-    public static Project getUpdated() {
-        final Project updated = copyOf(TEST_PROJECT);
-        updated.setName(UPDATED_NAME);
-        return updated;
+    static {
+        TEST_PROJECT.setId(TEST_PROJECT_ID);
     }
 
     public static Project copyOf(Project project) {
@@ -72,6 +76,5 @@ public final class ProjectTestData {
         copy.setTasks(tasksCopy);
         return copy;
     }
-
 
 }
