@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -13,6 +14,7 @@ import javax.persistence.Table;
 
 @NoArgsConstructor @AllArgsConstructor
 @Getter @Setter
+@ToString
 @Entity
 @Table(name = "users")
 public class User
