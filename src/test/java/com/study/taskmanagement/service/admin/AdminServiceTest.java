@@ -4,19 +4,18 @@ import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.repository.user.UserTestData;
+import com.study.taskmanagement.service.BaseServiceTest;
+import com.study.taskmanagement.service.exception.BusinessLogicException;
 import com.study.taskmanagement.util.EntityUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBeans;
-import org.springframework.boot.test.mock.mockito.MockReset;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,13 +25,14 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@ExtendWith(SpringExtension.class)
 @MockBeans(
         {
-                @MockBean(value = UserRepository.class, reset = MockReset.AFTER)
+                @MockBean(value = UserRepository.class)
         }
 )
-class AdminServiceTest {
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+class AdminServiceTest
+        extends BaseServiceTest {
 
     @TestConfiguration
     static class AdminServiceTestConfiguration {
@@ -79,7 +79,6 @@ class AdminServiceTest {
 
     @Test
     @Transactional(propagation = Propagation.NEVER)
-    @DirtiesContext
     void create() {
         final User userToCreate = UserTestData.copyOf(UserTestData.getNew());
         assertThat(adminService.create(userToCreate))
@@ -95,12 +94,11 @@ class AdminServiceTest {
         existing.setId(UserTestData.TEST_DEVELOPER_ID);
         assertThatThrownBy(() ->
                 adminService.create(existing))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(BusinessLogicException.class);
     }
 
     @Test
     @Transactional(propagation = Propagation.NEVER)
-    @DirtiesContext
     void update() {
         final String updatedName = "New Name";
         final User existing = adminService.get(UserTestData.TEST_DEVELOPER_ID);
@@ -115,7 +113,7 @@ class AdminServiceTest {
     void updateAbsent() {
         assertThatThrownBy(() ->
                 adminService.update(UserTestData.getNew()))
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(BusinessLogicException.class);
     }
 
     @Test
@@ -128,7 +126,6 @@ class AdminServiceTest {
 
     @Test
     @Transactional(propagation = Propagation.NEVER)
-    @DirtiesContext
     void delete() {
         final User userToDelete = UserTestData.copyOf(UserTestData.TEST_DEVELOPER);
         userToDelete.setId(UserTestData.TEST_DEVELOPER_ID);
@@ -138,7 +135,7 @@ class AdminServiceTest {
             userToDelete.setId(absentId);
             adminService.delete(userToDelete);
         })
-                .isInstanceOf(RuntimeException.class);
+                .isInstanceOf(BusinessLogicException.class);
     }
 
 }
