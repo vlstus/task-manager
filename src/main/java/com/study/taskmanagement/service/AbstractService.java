@@ -2,12 +2,14 @@ package com.study.taskmanagement.service;
 
 import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.service.exception.BusinessLayerException;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
 
-@Slf4j
 public abstract class AbstractService<T extends BaseEntity, ID>
         implements CrudService<T, ID> {
+
+    protected final transient Logger log = LoggerFactory.getLogger(getClass());
 
     private final CrudRepository<T, ID> crudRepository;
 
