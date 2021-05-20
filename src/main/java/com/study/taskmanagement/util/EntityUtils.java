@@ -10,11 +10,11 @@ import java.util.function.Predicate;
 public class EntityUtils {
 
     public <Entity extends BaseEntity> void assurePersisted(Entity user) {
-        assureThat(user, EntityUtils::isNew);
+        assureThat(user, EntityUtils::exists);
     }
 
     public <Entity extends BaseEntity> void assureNew(Entity entity) {
-        assureThat(entity, EntityUtils::exists);
+        assureThat(entity, EntityUtils::isNew);
     }
 
     private <Entity extends BaseEntity> void assureThat(Entity entity, Predicate<Entity> condition) {
@@ -22,11 +22,11 @@ public class EntityUtils {
             throw new RuntimeException();
     }
 
-    private <Entity extends BaseEntity> boolean exists(Entity entity) {
+    public  <Entity extends BaseEntity> boolean exists(Entity entity) {
         return !isNew(entity);
     }
 
-    private <Entity extends BaseEntity> boolean isNew(Entity entity) {
+    public  <Entity extends BaseEntity> boolean isNew(Entity entity) {
         return Objects.isNull(entity.getId());
     }
 
