@@ -25,8 +25,8 @@ CREATE TABLE tasks
     status          VARCHAR                 NOT NULL,
     manager_id      INT                     NOT NULL,
     project_id      INT                     NOT NULL,
-    developer_id    INT                     NOT NULL,
+    developer_id    INT,
     foreign key (manager_id) references users(id),
     foreign key (project_id) references projects(id),
-    foreign key (developer_id) references users(id)
+    foreign key (developer_id) references users(id) ON DELETE SET NULL
 );
