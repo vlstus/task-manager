@@ -1,14 +1,12 @@
 package com.study.taskmanagement.repository.project;
 
+import com.study.taskmanagement.CopyUtils;
 import com.study.taskmanagement.model.project.Project;
 import com.study.taskmanagement.model.project.Status;
 import com.study.taskmanagement.model.project.Task;
-import com.study.taskmanagement.model.user.User;
-import com.study.taskmanagement.repository.user.UserTestData;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static com.study.taskmanagement.repository.project.ProjectTestData.TaskTestData.TEST_TASK;
 import static com.study.taskmanagement.repository.user.UserTestData.TEST_DEVELOPER;
@@ -31,14 +29,7 @@ public final class ProjectTestData {
         }
 
         public static Task copyOf(Task task) {
-            Task copy = new Task();
-            copy.setId(task.getId());
-            copy.setName(task.getName());
-            copy.setStatus(task.getStatus());
-            copy.setManager(UserTestData.copyOf(task.getManager()));
-            copy.getManager().setId(UserTestData.TEST_MANAGER_ID);
-            copy.setDeveloper(task.getDeveloper());
-            return copy;
+            return CopyUtils.copyOf(task, Task.class);
         }
 
     }
@@ -54,14 +45,7 @@ public final class ProjectTestData {
     }
 
     public static Project copyOf(Project project) {
-        Project copy = new Project();
-        copy.setId(project.getId());
-        copy.setName(project.getName());
-        copy.setManager(UserTestData.copyOf(project.getManager()));
-        List<Task> tasksCopy = new ArrayList<>();
-        project.getTasks().forEach(task -> tasksCopy.add(TaskTestData.copyOf(task)));
-        copy.setTasks(tasksCopy);
-        return copy;
+        return CopyUtils.copyOf(project, Project.class);
     }
 
 }

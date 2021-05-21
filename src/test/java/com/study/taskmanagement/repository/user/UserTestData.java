@@ -1,5 +1,6 @@
 package com.study.taskmanagement.repository.user;
 
+import com.study.taskmanagement.CopyUtils;
 import com.study.taskmanagement.model.user.Role;
 import com.study.taskmanagement.model.user.User;
 
@@ -34,12 +35,7 @@ public final class UserTestData {
     public static final List<User> TEST_USERS = new ArrayList<>(Arrays.asList(TEST_DEVELOPER, TEST_MANAGER));
 
     public static User copyOf(User user) {
-        User copy = new User();
-        copy.setId(user.getId());
-        copy.setName(user.getName());
-        copy.setPassword(user.getPassword());
-        copy.setRole(user.getRole());
-        return copy;
+        return CopyUtils.copyOf(user, User.class);
     }
 
 }

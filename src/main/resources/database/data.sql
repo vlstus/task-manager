@@ -1,5 +1,5 @@
-DELETE FROM projects;
 DELETE FROM tasks;
+DELETE FROM projects;
 DELETE FROM users;
 
 INSERT INTO users (id,name,password,role) VALUES

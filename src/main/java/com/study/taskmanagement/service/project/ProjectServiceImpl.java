@@ -6,11 +6,11 @@ import com.study.taskmanagement.service.AbstractService;
 import org.springframework.stereotype.Service;
 
 @Service
-public class SimpleProjectService
+public class ProjectServiceImpl
         extends AbstractService<Project, Integer>
         implements ProjectService {
 
-    protected SimpleProjectService(ProjectRepository projectRepository) {
+    protected ProjectServiceImpl(ProjectRepository projectRepository) {
         super(projectRepository);
     }
 
