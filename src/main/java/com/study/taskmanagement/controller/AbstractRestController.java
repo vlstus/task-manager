@@ -3,7 +3,6 @@ package com.study.taskmanagement.controller;
 import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.service.CrudService;
 import com.study.taskmanagement.service.exception.BusinessLayerException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -14,12 +13,15 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collection;
 
-@RequiredArgsConstructor
 public abstract class AbstractRestController<T extends BaseEntity, ID>
         implements CrudRestController<T, ID> {
 
     @Autowired
-    private final CrudService<T, ID> crudService;
+    protected final CrudService<T, ID> crudService;
+
+    protected AbstractRestController(CrudService<T, ID> crudService) {
+        this.crudService = crudService;
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.OK)

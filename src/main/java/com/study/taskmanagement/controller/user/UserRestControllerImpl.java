@@ -12,7 +12,7 @@ class UserRestControllerImpl
         extends AbstractRestController<User, Integer>
         implements UserRestController {
 
-    public UserRestControllerImpl(UserService userService) {
+    protected UserRestControllerImpl(UserService userService) {
         super(userService);
     }
 

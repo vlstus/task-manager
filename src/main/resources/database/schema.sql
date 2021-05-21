@@ -14,8 +14,8 @@ CREATE TABLE projects
 (
     id              IDENTITY                PRIMARY KEY NOT NULL,
     name            VARCHAR                 NOT NULL,
-    manager_id      INT                     NOT NULL,
-    foreign key (manager_id) references users(id)
+    manager_id      INT,
+    foreign key (manager_id) references users(id) ON DELETE SET NULL
 );
 
 CREATE TABLE tasks
@@ -23,10 +23,10 @@ CREATE TABLE tasks
     id              IDENTITY                PRIMARY KEY NOT NULL,
     name            VARCHAR                 NOT NULL,
     status          VARCHAR                 NOT NULL,
-    manager_id      INT                     NOT NULL,
+    manager_id      INT,
     project_id      INT                     NOT NULL,
     developer_id    INT,
-    foreign key (manager_id) references users(id),
-    foreign key (project_id) references projects(id),
+    foreign key (manager_id) references users(id) ON DELETE SET NULL,
+    foreign key (project_id) references projects(id) ON DELETE CASCADE,
     foreign key (developer_id) references users(id) ON DELETE SET NULL
 );
