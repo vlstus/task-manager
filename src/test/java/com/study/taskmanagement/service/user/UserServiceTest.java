@@ -50,7 +50,7 @@ public class UserServiceTest
         final String updatedName = "Updated";
         final User managerToUpdate = UserTestData.copyOf(UserTestData.TEST_MANAGER);
         managerToUpdate.setName(updatedName);
-        assertThat(userService.update(managerToUpdate))
+        assertThat(userService.update(managerToUpdate,managerToUpdate.getId()))
                 .hasFieldOrPropertyWithValue("name", updatedName);
     }
 
@@ -58,7 +58,7 @@ public class UserServiceTest
     void updateAbsent() {
         final User absentUser = new User("Absent", "NoPass", Role.ADMIN);
         assertThatThrownBy(() -> {
-            userService.update(absentUser);
+            userService.update(absentUser,UserTestData.TEST_DEVELOPER_ID);
         }).isInstanceOf(BusinessLayerException.class);
         verify(mockUserRepository, times(0)).save(any(User.class));
     }

@@ -19,3 +19,9 @@ spring:
     console:
       enabled: true
       path: '/h2-console'
+logging:
+  level:
+    root: ERROR
+    org.springframework.web: DEBUG
+    org.hibernate: DEBUG
+    com.study: TRACE

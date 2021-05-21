@@ -40,7 +40,7 @@ public class ProjectServiceTest
         final String updatedName = "Updated";
         final Project projectToUpdate = ProjectTestData.copyOf(ProjectTestData.TEST_PROJECT);
         projectToUpdate.setName(updatedName);
-        assertThat(projectService.update(projectToUpdate))
+        assertThat(projectService.update(projectToUpdate,projectToUpdate.getId()))
                 .hasFieldOrPropertyWithValue("name", updatedName);
     }
 
@@ -48,7 +48,7 @@ public class ProjectServiceTest
     void updateAbsent() {
         final Project absentProject = new Project(null, null, null);
         assertThatThrownBy(() -> {
-            projectService.update(absentProject);
+            projectService.update(absentProject,ProjectTestData.TEST_PROJECT_ID);
         }).isInstanceOf(BusinessLayerException.class);
         verify(mockProjectRepository, times(0)).save(any(Project.class));
     }
