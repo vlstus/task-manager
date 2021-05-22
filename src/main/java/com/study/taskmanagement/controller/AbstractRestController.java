@@ -13,8 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Collection;
 
-public abstract class AbstractRestController<T extends BaseEntity, ID>
-        implements CrudRestController<T, ID> {
+public abstract class AbstractRestController<T extends BaseEntity, ID> {
 
     @Autowired
     protected final CrudService<T, ID> crudService;
