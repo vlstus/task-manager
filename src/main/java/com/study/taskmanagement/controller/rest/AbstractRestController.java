@@ -1,4 +1,4 @@
-package com.study.taskmanagement.controller;
+package com.study.taskmanagement.controller.rest;
 
 import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.service.CrudService;
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -52,7 +53,7 @@ public abstract class AbstractRestController<T extends BaseEntity, ID> {
     }
 
     @PutMapping(
-            path = "/{id}",
+            path = "{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
@@ -65,12 +66,18 @@ public abstract class AbstractRestController<T extends BaseEntity, ID> {
         }
     }
 
-    @DeleteMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE
-    )
+    //    @DeleteMapping(
+//            consumes = MediaType.APPLICATION_JSON_VALUE
+//    )
+//    @ResponseStatus(HttpStatus.NO_CONTENT)
+//    public void delete(@RequestBody T dto) {
+//        crudService.delete(dto);
+//    }
+    @DeleteMapping(path = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@RequestBody T dto) {
-        crudService.delete(dto);
+    @Transactional
+    public void delete(@PathVariable ID id) {
+        crudService.delete(crudService.get(id));
     }
 
 }

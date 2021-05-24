@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title th:text="#{application.title}">Application Title</title>
+
+    <th:block th:include="fragments/header.html :: head"/>
+</head>
+<body>
+<div class="container">
+    <div class="navbar">
+        <span class="nav-item">
+
+        </span>
+    </div>
+</div>
+</body>
+<footer>
+    <th:block th:include="fragments/footer.html :: footer"/>
+</footer>
+</html>

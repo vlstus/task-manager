@@ -1,0 +1,74 @@
+let ajaxUrl, datatableApi, form, updateTable;
+
+function makeEditable(aUrl, datatableOpts, updTable) {
+    ajaxUrl = aUrl;
+    $.extend($.fn.dataTable.defaults, {
+        "ajax": ajaxUrl,
+        "ajaxDataProp": "",
+        "order": [[0, "asc"]]
+    });
+    datatableApi = $('#dataTable').DataTable(datatableOpts);
+    form = $('#detailsForm');
+    updateTable = updTable;
+}
+
+function add() {
+    form.find(":input").val("");
+    $("#editRow").modal();
+}
+
+function save() {
+    let data = {};
+    $.each(form.serializeArray(), function() { data[this.name] = this.value; });
+    $.ajax({
+        type: "POST",
+        url: ajaxUrl,
+        contentType: "application/json",
+        data: JSON.stringify(data),
+    }).done(function () {
+        $("#editRow").modal("hide");
+        updateTable();
+    });
+}
+
+function updateTableByData(data) {
+    datatableApi.clear().rows.add(data).draw();
+}
+
+function updateRow(id) {
+    form.find(":input").val("");
+    $.ajax({
+        type: "GET",
+        url: ajaxUrl + id
+    }).done(function(data) {
+        $.each(data,function(key,value) {
+            form.find("input[name='" + key + "']").val(value);
+        })
+        $('#editRow').modal();
+    });
+//    $.get(ajaxUrl + id, function (data) {
+//        $.each(data, function (key, value) {
+//            form.find("input[name='" + key + "']").val(value);
+//        });
+//        $('#editRow').modal();
+//    });
+}
+
+function deleteRow(id) {
+    if (confirm('sure?')) {
+        $.ajax({
+            url: ajaxUrl + id,
+            type: "DELETE"
+        }).done(function () {
+            updateTable();
+        });
+    }
+}
+
+function renderEditBtn(data, type, row) {
+    return "<button class='btn btn-info' onclick='updateRow(" + row.id + ");'>Edit</button>";
+}
+
+function renderDeleteBtn(data, type, row){
+    return "<button class='btn btn-danger' onclick='deleteRow(" + row.id + ");'>Delete</button>";
+}

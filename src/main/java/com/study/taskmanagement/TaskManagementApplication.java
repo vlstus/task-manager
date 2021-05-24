@@ -6,10 +6,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @EnableJpaRepositories
-public class TaskManagementApplication {
+public class TaskManagementApplication
+        implements WebMvcConfigurer {
 
     public static void main(String[] args) {
         SpringApplication.run(TaskManagementApplication.class, args);
@@ -18,6 +21,14 @@ public class TaskManagementApplication {
     @Bean
     public Module hibernateLazyProxyModule() {
         return new Hibernate5Module();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        WebMvcConfigurer.super.addResourceHandlers(registry);
+        registry
+                .addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
 }

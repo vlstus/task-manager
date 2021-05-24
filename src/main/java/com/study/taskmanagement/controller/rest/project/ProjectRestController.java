@@ -1,6 +1,6 @@
-package com.study.taskmanagement.controller.project;
+package com.study.taskmanagement.controller.rest.project;
 
-import com.study.taskmanagement.controller.AbstractRestController;
+import com.study.taskmanagement.controller.rest.AbstractRestController;
 import com.study.taskmanagement.model.project.Project;
 import com.study.taskmanagement.service.project.ProjectService;
 import org.springframework.web.bind.annotation.RequestMapping;
