@@ -23,18 +23,16 @@ public abstract class AbstractRestController<T extends BaseEntity, ID> {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public Collection<T> getAll() {
-        return crudService.getAll();
+    public ResponseEntity<Collection<T>> getAll() {
+        return ResponseEntity.ok(crudService.getAll());
     }
 
     @GetMapping(
             path = "{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.OK)
-    public T getById(@PathVariable ID id) {
+    public ResponseEntity<T> getById(@PathVariable ID id) {
         try {
-            return crudService.get(id);
+            return ResponseEntity.ok(crudService.get(id));
         } catch (BusinessLayerException businessException) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "MESSAGE_SOURCE.NOT_FOUND_MESSAGE", businessException);
         }
