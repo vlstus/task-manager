@@ -41,17 +41,29 @@ function updateRow(id) {
         type: "GET",
         url: ajaxUrl + id
     }).done(function(data) {
+        let root;
+        let process = (key, value) => {
+            if(!value){
+                return;
+            }
+            if(value.constructor === Object){
+                root = key;
+                $.each(value, process);
+                root = null;
+            } else {
+                if(root){
+                    form.find("input[name='" + root + "." + key + "']").val(value);
+                } else {
+                    form.find("input[name='" + key + "']").val(value);
+                }
+
+            }
+        }
         $.each(data,function(key,value) {
-            form.find("input[name='" + key + "']").val(value);
+            process(key, value);
         })
         $('#editRow').modal();
     });
-//    $.get(ajaxUrl + id, function (data) {
-//        $.each(data, function (key, value) {
-//            form.find("input[name='" + key + "']").val(value);
-//        });
-//        $('#editRow').modal();
-//    });
 }
 
 function deleteRow(id) {
