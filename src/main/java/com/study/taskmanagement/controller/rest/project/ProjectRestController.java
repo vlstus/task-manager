@@ -16,10 +16,4 @@ public class ProjectRestController
         super(projectService);
     }
 
-    // TODO: 25-May-21 Get logged in user, check if it is a manager, set it as an project manager 
-    @Override
-    public ResponseEntity<Project> create(Project dto) {
-        return super.create(dto);
-    }
-
 }

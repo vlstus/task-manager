@@ -1,6 +1,8 @@
 package com.study.taskmanagement.service.project;
 
 import com.study.taskmanagement.model.project.Project;
+import com.study.taskmanagement.model.user.Role;
+import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.project.ProjectRepository;
 import com.study.taskmanagement.service.AbstractService;
 import com.study.taskmanagement.service.exception.BusinessLayerException;
@@ -16,19 +18,29 @@ public class ProjectServiceImpl
         super(projectRepository);
     }
 
+
+    @Override
+    @Transactional
+    public Project create(Project project) {
+        setCurrentManager(project);
+        return super.create(project);
+    }
+
+
+
     @Override
     @Transactional
     public Project update(Project updated, Integer id) {
-        log.info("Updating entity {}", updated);
-        if (updated.getId() == null ||
-                !(updated.getId().equals(id))) {
-            log.warn("Failed to update entity {}", updated);
-            throw new BusinessLayerException();
-        }
         final Project existing = crudRepository.findById(id)
                 .orElseThrow(BusinessLayerException::new);
         updated.setTasks(existing.getTasks());
-        return crudRepository.save(updated);
+        return super.update(updated, id);
+    }
+
+    // TODO: 25-May-21 GET CURRENT LOGGED IN MANAGER FROM SECURITY CONTEXT
+    private void setCurrentManager(Project project) {
+        project.setManager(new User("Jane Doe", "Password", Role.MANAGER));
+        project.getManager().setId(100001);
     }
 
 }
