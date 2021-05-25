@@ -18,11 +18,27 @@ function add() {
 }
 
 function save() {
-    let data = {};
-    $.each(form.serializeArray(), function() { data[this.name] = this.value; });
+//    let data = {};
+//    $.each(form.serializeArray(), function() { data[this.name] = this.value; });
+    let data = $(form).serializeObject();
     $.ajax({
         type: "POST",
         url: ajaxUrl,
+        contentType: "application/json",
+        data: JSON.stringify(data),
+    }).done(function () {
+        $("#editRow").modal("hide");
+        updateTable();
+    });
+}
+
+function update() {
+//    let data = {};
+//    $.each(form.serializeArray(), function() { data[this.name] = this.value; });
+    let data = $(form).serializeObject();
+    $.ajax({
+        type: "PUT",
+        url: ajaxUrl + data.id,
         contentType: "application/json",
         data: JSON.stringify(data),
     }).done(function () {

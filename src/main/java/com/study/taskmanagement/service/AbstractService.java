@@ -13,9 +13,9 @@ import java.util.stream.StreamSupport;
 public abstract class AbstractService<T extends BaseEntity, ID>
         implements CrudService<T, ID> {
 
-    protected final transient Logger log = LoggerFactory.getLogger(getClass());
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
-    private final CrudRepository<T, ID> crudRepository;
+    protected final CrudRepository<T, ID> crudRepository;
 
     protected AbstractService(CrudRepository<T, ID> crudRepository) {
         this.crudRepository = crudRepository;
