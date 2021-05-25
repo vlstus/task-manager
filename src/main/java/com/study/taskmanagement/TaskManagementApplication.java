@@ -1,7 +1,10 @@
 package com.study.taskmanagement;
 
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
+import com.study.taskmanagement.controller.deserialization.NewTaskDeserializer;
+import com.study.taskmanagement.model.project.Task;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +32,13 @@ public class TaskManagementApplication
         registry
                 .addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    @Bean
+    public Module taskDeserializationDtoModule() {
+        final SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addDeserializer(Task.class, new NewTaskDeserializer(Task.class));
+        return simpleModule;
     }
 
 }
