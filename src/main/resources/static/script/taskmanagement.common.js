@@ -5,7 +5,11 @@ function makeEditable(aUrl, datatableOpts, updTable, prepareCallback) {
     $.extend($.fn.dataTable.defaults, {
         "ajax": ajaxUrl,
         "ajaxDataProp": "",
-        "order": [[0, "asc"]]
+        "order": [[0, "asc"]],
+        "columnDefs": [{
+            "targets": "_all",
+            "defaultContent": ""
+        }]
     });
     datatableApi = $('#dataTable').DataTable(datatableOpts);
     form = $('#detailsForm');
