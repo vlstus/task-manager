@@ -8,8 +8,6 @@ import com.study.taskmanagement.repository.project.TaskRepository;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
 import com.study.taskmanagement.service.exception.BusinessLayerException;
-import com.study.taskmanagement.service.project.ProjectService;
-import com.study.taskmanagement.service.user.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,26 +29,36 @@ public class TaskServiceImpl
     @Override
     @Transactional
     public Task create(Task task) {
-        fetchData(task);
+        fetchTask(task);
         return super.create(task);
     }
 
     @Override
     @Transactional
-    public Task update(Task task, Integer entityId) {
-        fetchData(task);
-        return super.update(task, entityId);
+    public Task update(Task task, Integer id) {
+        fetchTask(task);
+        return super.update(task, id);
     }
 
-    private void fetchData(Task task) {
-        final User taskManager = userRepository.findByName(task.getManager().getName())
-                .orElseThrow(BusinessLayerException::new);
-        final User taskDeveloper = userRepository.findByName(task.getDeveloper().getName())
-                .orElseThrow(BusinessLayerException::new);
-        final Project taskProject = projectRepository.findByName(task.getProject().getName());
-        task.setManager(taskManager);
-        task.setDeveloper(taskDeveloper);
-        task.setProject(taskProject);
+    private void fetchTask(Task task) {
+        final User manager = fetchUser(task.getManager());
+        final User developer = fetchUser(task.getDeveloper());
+        final Project project = fetchProject(task.getProject());
+        task.setManager(manager);
+        task.setDeveloper(developer);
+        task.setProject(project);
+    }
+
+    private User fetchUser(User user) {
+        log.info("Fetching user data form {}", user);
+        return userRepository.findByName(user.getName())
+                .orElseThrow(() -> new BusinessLayerException("USER DOES NOT EXIST"));
+    }
+
+    private Project fetchProject(Project project) {
+        log.info("Fetching manager data form {}", project);
+        return projectRepository.findByName(project.getName())
+                .orElseThrow(() -> new BusinessLayerException("PROJECT DOES NOT EXIST"));
     }
 
 }

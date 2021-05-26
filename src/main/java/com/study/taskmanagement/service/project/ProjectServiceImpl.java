@@ -36,6 +36,7 @@ public class ProjectServiceImpl
     }
 
     private User fetchManager(User manager) {
+        log.info("Fetching manager data form {}", manager);
         return userRepository.findByName(manager.getName())
                 .orElseThrow(() -> new BusinessLayerException("MANAGER NOT EXIST"));
     }

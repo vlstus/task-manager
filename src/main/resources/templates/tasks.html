@@ -19,7 +19,6 @@
         <table id="dataTable" class="table table-striped">
             <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Status</th>
                 <th>Manager</th>
@@ -52,33 +51,32 @@
 
                     <div class="form-group">
                         <label for="status" class="col-form-label">Status</label>
-                        <input type="text" class="form-control" id="status" name="status">
+                        <select id="status" name="status">
+                            <option value="TO_DO">TO_DO</option>
+                            <option value="IN_PROGRESS">IN_PROGRESS</option>
+                            <option value="DONE">DONE</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="manager.name" class="col-form-label">Manager</label>
-                        <input type="text" class="form-control" id="manager.name" name="manager.name">
+                        <input type="hidden" id="manager.id" name="manager.id">
+                        <label for="manager.name" class="col-form-label"></label>
+                        <select id="manager.name" name="manager.name">
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="manager.role" class="col-form-label"></label>
-                        <input type="hidden" class="form-control" id="manager.role" name="manager.role" value="MANAGER">
+                        <input type="hidden" id="developer.id" name="developer.id">
+                        <label for="developer.name" class="col-form-label"></label>
+                        <select id="developer.name" name="developer.name">
+                        </select>
                     </div>
 
                     <div class="form-group">
-                        <label for="developer.name" class="col-form-label">Developer</label>
-                        <input type="text" class="form-control" id="developer.name" name="developer.name">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="developer.role" class="col-form-label"></label>
-                        <input type="hidden" class="form-control" id="developer.role" name="developer.role"
-                               value="DEVELOPER">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="project.name" class="col-form-label">Project</label>
-                        <input type="text" class="form-control" id="project.name" name="project.name">
+                        <input type="hidden" id="project.id" name="project.id">
+                        <label for="project.name" class="col-form-label"></label>
+                        <select id="project.name" name="project.name">
+                        </select>
                     </div>
 
 

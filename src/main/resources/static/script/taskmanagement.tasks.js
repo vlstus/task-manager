@@ -4,9 +4,6 @@ $(document).ready(function () {
     makeEditable(tasksAjaxUrl, {
         "columns": [
             {
-                data: "id"
-            },
-            {
                 data: "name"
             },
             {
@@ -33,9 +30,37 @@ $(document).ready(function () {
             $.get(tasksAjaxUrl, updateTableByData);
         },
     function(){
-                form.find(":input").val("");
-                form[0]["manager.role"].value = "MANAGER";
-                form[0]["developer.role"].value = "DEVELOPER";
-                $("#editRow").modal();
+            let managerSelectForm = $("select[name='manager.name']")
+            managerSelectForm.empty();
+            $.ajax({
+                type: "GET",
+                url: "/api/v1/users?role=MANAGER"
+            }).done(function(data){
+                $.each(data, function(index, manager){
+                    managerSelectForm.append($("<option>",{value:manager.name, html:manager.name}))
+                })
+            });
+
+            let developerSelectForm = $("select[name='developer.name']")
+            developerSelectForm.empty();
+            $.ajax({
+                type: "GET",
+                url: "/api/v1/users?role=DEVELOPER"
+            }).done(function(data){
+                $.each(data, function(index, developer){
+                    developerSelectForm.append($("<option>",{value:developer.name, html:developer.name}))
+                })
+            });
+
+            let projectSelectForm = $("select[name='project.name']")
+            projectSelectForm.empty();
+            $.ajax({
+                type: "GET",
+                url: "/api/v1/projects"
+            }).done(function(data){
+                $.each(data, function(index, project){
+                    projectSelectForm.append($("<option>",{value:project.name, html:project.name}))
+                })
+            });
         });
 });

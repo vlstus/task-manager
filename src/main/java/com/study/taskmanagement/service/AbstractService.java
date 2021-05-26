@@ -50,6 +50,8 @@ public abstract class AbstractService<T extends BaseEntity, ID>
 
     @Override
     public Collection<T> getAll() {
+        log.info("Getting all entities in service of type {}",
+                getClass().getSimpleName());
         return StreamSupport.stream(crudRepository.findAll().spliterator(), false)
                 .collect(Collectors.toList());
     }

@@ -4,7 +4,6 @@ import com.study.taskmanagement.model.user.Role;
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
-import com.study.taskmanagement.service.exception.BusinessLayerException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -22,6 +21,7 @@ public class UserServiceImpl
 
     @Override
     public Collection<User> getByRole(Role role) {
+        log.info("Getting all users with role {}", role);
         UserRepository userRepository = (UserRepository) crudRepository;
         return StreamSupport.stream(userRepository.findAllByRole(role).spliterator(), false)
                 .collect(Collectors.toList());
