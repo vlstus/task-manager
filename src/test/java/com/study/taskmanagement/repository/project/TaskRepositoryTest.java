@@ -28,9 +28,7 @@ class TaskRepositoryTest
                 .isPresent()
                 .hasValueSatisfying(task ->
                         assertThat(task)
-                                .usingRecursiveComparison()
-                                .ignoringFields("id", "manager", "status", "developer", "project")
-                                .isEqualTo(TaskTestData.TEST_TASK));
+                                .hasFieldOrPropertyWithValue("name", TaskTestData.TEST_TASK.getName()));
     }
 
     @Test

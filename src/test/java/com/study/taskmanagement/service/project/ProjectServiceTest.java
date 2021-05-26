@@ -33,6 +33,8 @@ public class ProjectServiceTest
                 .thenAnswer(invocation -> invocation.getArgument(0));
         when(mockProjectRepository.findById(ProjectTestData.TEST_PROJECT_ID))
                 .thenReturn(Optional.of(ProjectTestData.TEST_PROJECT));
+        when(mockProjectRepository.existsById(ProjectTestData.TEST_PROJECT_ID))
+                .thenReturn(true);
     }
 
     @Test
@@ -40,15 +42,14 @@ public class ProjectServiceTest
         final String updatedName = "Updated";
         final Project projectToUpdate = ProjectTestData.copyOf(ProjectTestData.TEST_PROJECT);
         projectToUpdate.setName(updatedName);
-        assertThat(projectService.update(projectToUpdate,projectToUpdate.getId()))
+        assertThat(projectService.update(projectToUpdate, projectToUpdate.getId()))
                 .hasFieldOrPropertyWithValue("name", updatedName);
     }
 
     @Test
     void updateAbsent() {
-        final Project absentProject = new Project(null, null, null);
         assertThatThrownBy(() -> {
-            projectService.update(absentProject,ProjectTestData.TEST_PROJECT_ID);
+            projectService.update(ProjectTestData.ABSENT_PROJECT, ProjectTestData.TEST_PROJECT_ID);
         }).isInstanceOf(BusinessLayerException.class);
         verify(mockProjectRepository, times(0)).save(any(Project.class));
     }
@@ -71,7 +72,7 @@ public class ProjectServiceTest
 
     @Test
     void delete() {
-        projectService.delete(ProjectTestData.TEST_PROJECT);
+        projectService.delete(ProjectTestData.copyOf(ProjectTestData.TEST_PROJECT));
         verify(mockProjectRepository, times(1)).delete(any(Project.class));
     }
 

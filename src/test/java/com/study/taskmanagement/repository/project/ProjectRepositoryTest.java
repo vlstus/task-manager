@@ -28,9 +28,7 @@ class ProjectRepositoryTest
                 .isPresent()
                 .hasValueSatisfying(project ->
                         assertThat(project)
-                                .usingRecursiveComparison()
-                                .ignoringFields("id", "manager", "tasks")
-                                .isEqualTo(ProjectTestData.TEST_PROJECT));
+                                .hasFieldOrPropertyWithValue("name", ProjectTestData.TEST_PROJECT.getName()));
     }
 
     @Test

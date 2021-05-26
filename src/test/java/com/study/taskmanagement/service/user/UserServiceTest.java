@@ -36,6 +36,8 @@ public class UserServiceTest
                 .thenAnswer(invocation -> invocation.getArgument(0));
         when(mockUserRepository.findById(UserTestData.TEST_DEVELOPER_ID))
                 .thenReturn(Optional.of(UserTestData.TEST_DEVELOPER));
+        when(mockUserRepository.existsById(UserTestData.TEST_MANAGER_ID))
+                .thenReturn(true);
     }
 
     @ParameterizedTest
@@ -50,7 +52,7 @@ public class UserServiceTest
         final String updatedName = "Updated";
         final User managerToUpdate = UserTestData.copyOf(UserTestData.TEST_MANAGER);
         managerToUpdate.setName(updatedName);
-        assertThat(userService.update(managerToUpdate,managerToUpdate.getId()))
+        assertThat(userService.update(managerToUpdate, managerToUpdate.getId()))
                 .hasFieldOrPropertyWithValue("name", updatedName);
     }
 
@@ -58,7 +60,7 @@ public class UserServiceTest
     void updateAbsent() {
         final User absentUser = new User("Absent", "NoPass", Role.ADMIN);
         assertThatThrownBy(() -> {
-            userService.update(absentUser,UserTestData.TEST_DEVELOPER_ID);
+            userService.update(absentUser, UserTestData.TEST_DEVELOPER_ID);
         }).isInstanceOf(BusinessLayerException.class);
         verify(mockUserRepository, times(0)).save(any(User.class));
     }

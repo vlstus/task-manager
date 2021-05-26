@@ -1,9 +1,0 @@
-spring:
-  profiles:
-    active: 'test'
-logging:
-  level:
-    root: ERROR
-    org.springframework: DEBUG
-    org.hibernate: DEBUG
-    com.study: TRACE
