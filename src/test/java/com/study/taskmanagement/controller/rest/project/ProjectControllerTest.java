@@ -1,8 +1,8 @@
-package com.study.taskmanagement.controller.user;
+package com.study.taskmanagement.controller.rest.project;
 
 import com.study.taskmanagement.controller.BaseControllerTest;
-import com.study.taskmanagement.model.user.Role;
-import com.study.taskmanagement.model.user.User;
+import com.study.taskmanagement.model.project.Project;
+import com.study.taskmanagement.repository.project.ProjectTestData;
 import com.study.taskmanagement.repository.user.UserTestData;
 import org.junit.jupiter.api.Test;
 import org.skyscreamer.jsonassert.Customization;
@@ -13,38 +13,46 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MvcResult;
 
+import java.util.Collections;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-public class UserControllerTest
+public class ProjectControllerTest
         extends BaseControllerTest {
 
     @Test
     void getByIdTest()
             throws Exception {
-        mockMvc.perform(get("/api/v1/users/{id}", UserTestData.TEST_DEVELOPER_ID))
+        final MvcResult mvcResult = mockMvc.perform(get("/api/v1/projects/{id}", ProjectTestData.TEST_PROJECT_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(UserTestData.TEST_DEVELOPER)));
+                .andReturn();
+        JSONAssert.assertEquals(
+                objectMapper.writeValueAsString(ProjectTestData.TEST_PROJECT),
+                mvcResult.getResponse().getContentAsString(),
+                new CustomComparator(
+                        JSONCompareMode.LENIENT,
+                        new Customization("tasks", (first, second) -> true)));
     }
 
     @Test
     void createTest()
             throws Exception {
-        final User user = new User("New", "Pass", Role.ADMIN);
-        final MvcResult mvcResult = mockMvc.perform(post("/api/v1/users/")
+        final Project project = new Project("New", UserTestData.TEST_MANAGER, null);
+        final MvcResult mvcResult = mockMvc.perform(post("/api/v1/projects/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)))
+                .content(objectMapper.writeValueAsString(project)))
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andReturn();
         JSONAssert.assertEquals(
-                objectMapper.writeValueAsString(user),
+                objectMapper.writeValueAsString(project),
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("id", (first, second) -> true)));
@@ -53,20 +61,26 @@ public class UserControllerTest
     @Test
     void getAllTest()
             throws Exception {
-        mockMvc.perform(get("/api/v1/users/"))
+        final MvcResult mvcResult = mockMvc.perform(get("/api/v1/projects/"))
                 .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(UserTestData.TEST_USERS)));
+                .andReturn();
+        JSONAssert.assertEquals(
+                objectMapper.writeValueAsString(Collections.singletonList(ProjectTestData.TEST_PROJECT)),
+                mvcResult.getResponse().getContentAsString(),
+                new CustomComparator(
+                        JSONCompareMode.LENIENT,
+                        new Customization("[id=100000].tasks", (first, second) -> true)));
     }
 
     @Test
     void updateTest()
             throws Exception {
-        final User user = UserTestData.copyOf(UserTestData.TEST_MANAGER);
-        user.setName("New");
-        mockMvc.perform(put("/api/v1/users/{id}", user.getId())
+        final Project project = ProjectTestData.copyOf(ProjectTestData.TEST_PROJECT);
+        project.setName("New");
+        mockMvc.perform(put("/api/v1/projects/{id}", project.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(user)))
+                .content(objectMapper.writeValueAsString(project)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
@@ -74,9 +88,9 @@ public class UserControllerTest
     @Test
     void deleteTest()
             throws Exception {
-        mockMvc.perform(delete("/api/v1/users/")
+        mockMvc.perform(delete("/api/v1/projects/")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(UserTestData.TEST_DEVELOPER)))
+                .content(objectMapper.writeValueAsString(ProjectTestData.TEST_PROJECT)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
