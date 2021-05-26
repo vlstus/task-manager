@@ -1,11 +1,8 @@
-const projectsAjaxUrl = "/api/v1/projects/";
+const projectsAjaxUrl = "/api/v1/projects";
 
 $(document).ready(function () {
     makeEditable(projectsAjaxUrl, {
         "columns": [
-            {
-                data: "id"
-            },
             {
                 data: "name"
             },
@@ -17,6 +14,9 @@ $(document).ready(function () {
             },
             {
                 render: renderDeleteBtn
+            },
+            {
+                render: renderDetailsBtn
             }
         ]
     },
@@ -24,8 +24,19 @@ $(document).ready(function () {
             $.get(projectsAjaxUrl, updateTableByData);
         },
     function(){
-            form.find(":input").val("");
-            form[0]["manager.role"].value = "MANAGER";
-            $("#editRow").modal();
+            let selectForm = $("select[name='manager.name']")
+            selectForm.empty();
+            $.ajax({
+                type: "GET",
+                url: "/api/v1/users?role=MANAGER"
+            }).done(function(data){
+                $.each(data, function(index, manager){
+                    selectForm.append($("<option>",{value:manager.name, html:manager.name}))
+                })
+            });
         });
 });
+
+function renderDetailsBtn(data, type, row){
+    return "<a href=tasks/" + row.id +">Details</a>";
+}

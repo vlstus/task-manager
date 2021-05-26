@@ -47,19 +47,19 @@ public abstract class AbstractRestController<T extends BaseEntity, ID> {
         final T created = crudService.create(entity);
         return ResponseEntity.created(ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("{id}")
+                .path("/{id}")
                 .buildAndExpand(created.getId())
                 .toUri())
                 .body(created);
     }
 
     @PutMapping(
-            path = "{id}",
+            path = "/{id}",
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody T dto, @PathVariable ID id) {
+    public void update(@Valid @RequestBody T dto, @PathVariable ID id) {
         try {
             crudService.update(dto, id);
         } catch (BusinessLayerException businessException) {
@@ -67,14 +67,7 @@ public abstract class AbstractRestController<T extends BaseEntity, ID> {
         }
     }
 
-    //    @DeleteMapping(
-//            consumes = MediaType.APPLICATION_JSON_VALUE
-//    )
-//    @ResponseStatus(HttpStatus.NO_CONTENT)
-//    public void delete(@RequestBody T dto) {
-//        crudService.delete(dto);
-//    }
-    @DeleteMapping(path = "{id}")
+    @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void delete(@PathVariable ID id) {

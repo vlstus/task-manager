@@ -5,6 +5,7 @@ import com.study.taskmanagement.service.exception.BusinessLayerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -28,10 +29,12 @@ public abstract class AbstractService<T extends BaseEntity, ID>
     }
 
     @Override
+    @Transactional
     public T update(T entity, ID entityId) {
         log.info("Updating entity {}", entity);
         if (entity.getId() == null ||
-                !(entity.getId().equals(entityId))) {
+                !(entity.getId().equals(entityId)) ||
+                !crudRepository.existsById(entityId)) {
             log.warn("Failed to update entity {}", entity);
             throw new BusinessLayerException();
         }

@@ -1,9 +1,9 @@
 package com.study.taskmanagement.service.project;
 
 import com.study.taskmanagement.model.project.Project;
-import com.study.taskmanagement.model.user.Role;
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.project.ProjectRepository;
+import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
 import com.study.taskmanagement.service.exception.BusinessLayerException;
 import org.springframework.stereotype.Service;
@@ -14,33 +14,30 @@ public class ProjectServiceImpl
         extends AbstractService<Project, Integer>
         implements ProjectService {
 
-    protected ProjectServiceImpl(ProjectRepository projectRepository) {
-        super(projectRepository);
-    }
+    private final UserRepository userRepository;
 
+    protected ProjectServiceImpl(ProjectRepository projectRepository, UserRepository userRepository) {
+        super(projectRepository);
+        this.userRepository = userRepository;
+    }
 
     @Override
     @Transactional
     public Project create(Project project) {
-        setCurrentManager(project);
+        project.setManager(fetchManager(project.getManager()));
         return super.create(project);
     }
 
-
-
     @Override
     @Transactional
-    public Project update(Project updated, Integer id) {
-        final Project existing = crudRepository.findById(id)
-                .orElseThrow(BusinessLayerException::new);
-        updated.setTasks(existing.getTasks());
-        return super.update(updated, id);
+    public Project update(Project project, Integer entityId) {
+        project.setManager(fetchManager(project.getManager()));
+        return super.update(project, entityId);
     }
 
-    // TODO: 25-May-21 GET CURRENT LOGGED IN MANAGER FROM SECURITY CONTEXT
-    private void setCurrentManager(Project project) {
-        project.setManager(new User("Jane Doe", "Password", Role.MANAGER));
-        project.getManager().setId(100001);
+    private User fetchManager(User manager) {
+        return userRepository.findByName(manager.getName())
+                .orElseThrow(() -> new BusinessLayerException("MANAGER NOT EXIST"));
     }
 
 }

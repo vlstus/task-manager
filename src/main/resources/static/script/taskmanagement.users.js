@@ -1,4 +1,4 @@
-const userAjaxUrl = "/api/v1/users/";
+const userAjaxUrl = "/api/v1/users";
 
 $(document).ready(function () {
     makeEditable(userAjaxUrl, {

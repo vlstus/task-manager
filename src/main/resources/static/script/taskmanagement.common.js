@@ -79,12 +79,11 @@ function makeEditable(aUrl, datatableOpts, updTable, prepareCallback) {
 }
 
 function add() {
-    if(!prepareFormCallback) {
-        form.find(":input").val("");
-        $("#editRow").modal();
-    } else {
+    form.find(":input").val("");
+    if(prepareFormCallback){
         prepareFormCallback();
     }
+    $("#editRow").modal();
 }
 
 function sendRequestAndUpdateTable(reqType, reqUrl) {
@@ -103,7 +102,7 @@ function sendRequestAndUpdateTable(reqType, reqUrl) {
 function save() {
     rowId = $("#id")[0].value;
     if(rowId){
-        sendRequestAndUpdateTable("PUT", ajaxUrl + rowId);
+        sendRequestAndUpdateTable("PUT", ajaxUrl + "/" + rowId);
     } else {
         sendRequestAndUpdateTable("POST", ajaxUrl);
     }
@@ -116,9 +115,12 @@ function updateTableByData(data) {
 
 function updateRow(id) {
     form.find(":input").val("");
+    if(prepareFormCallback){
+        prepareFormCallback();
+    }
     $.ajax({
         type: "GET",
-        url: ajaxUrl + id
+        url: ajaxUrl + "/" + id
     }).done(function(data) {
         let root;
         let process = (key, value) => {
@@ -130,13 +132,14 @@ function updateRow(id) {
                 $.each(value, process);
                 root = null;
             } else {
-                if(document.getElementById(key)){
-                    document.getElementById(key).value = value;
-                }
                 if(root){
-                    form.find("input[name='" + root + "." + key + "']").val(value);
+                    if(document.getElementById(root + "." + key)){
+                        document.getElementById(root + "." + key).value = value;
+                    }
                 } else {
-                    form.find("input[name='" + key + "']").val(value);
+                    if(document.getElementById(key)){
+                        document.getElementById(key).value = value;
+                    }
                 }
 
             }
@@ -151,7 +154,7 @@ function updateRow(id) {
 function deleteRow(id) {
     if (confirm('sure?')) {
         $.ajax({
-            url: ajaxUrl + id,
+            url: ajaxUrl + "/" + id,
             type: "DELETE"
         }).done(function () {
             updateTable();
