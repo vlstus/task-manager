@@ -29,18 +29,25 @@ public class TaskServiceImpl
     @Override
     @Transactional
     public Task create(Task task) {
-        fetchTask(task);
+        fetchTaskData(task);
         return super.create(task);
     }
 
     @Override
     @Transactional
     public Task update(Task task, Integer id) {
-        fetchTask(task);
+        fetchTaskData(task);
         return super.update(task, id);
     }
 
-    private void fetchTask(Task task) {
+    @Override
+    public Task get(Integer id) {
+        log.info("Getting entity with id {}", id);
+        return ((TaskRepository)crudRepository).findByIdWithStaffIfExists(id)
+                .orElseThrow(BusinessLayerException::new);
+    }
+
+    private void fetchTaskData(Task task) {
         final User manager = fetchUser(task.getManager());
         final User developer = fetchUser(task.getDeveloper());
         final Project project = fetchProject(task.getProject());

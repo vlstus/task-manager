@@ -7,13 +7,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -33,8 +31,16 @@ public class Project
     @NotEmpty
     @Length(min = 5, max = 50)
     private String name;
-    @ManyToOne
-    @JoinColumn(name = "manager_id")
+    @ManyToOne(
+            fetch = FetchType.LAZY
+    )
+    @NotFound(
+            action = NotFoundAction.IGNORE
+    )
+    @JoinColumn(
+            name = "manager_id",
+            referencedColumnName = "id"
+    )
     @NotNull
     private User manager;
     @OneToMany(mappedBy = "project")
