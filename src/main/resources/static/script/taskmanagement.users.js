@@ -4,9 +4,6 @@ $(document).ready(function () {
     makeEditable(userAjaxUrl, {
         "columns": [
             {
-                data: "id"
-            },
-            {
                 data: "name"
             },
             {

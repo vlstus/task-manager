@@ -19,7 +19,6 @@
         <table id="dataTable" class="table table-striped">
             <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Password</th>
                 <th>Role</th>
@@ -55,7 +54,11 @@
 
                     <div class="form-group">
                         <label for="role" class="col-form-label">Role</label>
-                        <input type="text" class="form-control" id="role" name="role">
+                        <select id="role" name="role">
+                            <option value="ADMIN">ADMIN</option>
+                            <option value="MANAGER">MANAGER</option>
+                            <option value="DEVELOPER">DEVELOPER</option>
+                        </select>
                     </div>
 
                 </form>

@@ -71,6 +71,11 @@ function makeEditable(aUrl, datatableOpts, updTable, prepareCallback) {
             }
         }
     }
+    $(document).ajaxError(function (event, jqXHR, options, jsExc) {
+        failNoty(jqXHR);
+    });
+    $.ajaxSetup({cache: false});
+
 }
 
 function add() {
@@ -125,6 +130,9 @@ function updateRow(id) {
                 $.each(value, process);
                 root = null;
             } else {
+                if(document.getElementById(key)){
+                    document.getElementById(key).value = value;
+                }
                 if(root){
                     form.find("input[name='" + root + "." + key + "']").val(value);
                 } else {
@@ -149,6 +157,36 @@ function deleteRow(id) {
             updateTable();
         });
     }
+}
+
+var failedNote;
+
+function closeNoty() {
+    if (failedNote) {
+        failedNote.close();
+        failedNote = undefined;
+    }
+}
+
+
+function successNoty(key) {
+    closeNoty();
+    new Noty({
+        text: "<span class='fa fa-lg fa-check'></span> &nbsp;",
+        type: 'success',
+        layout: "bottomRight",
+        timeout: 1000
+    }).show();
+}
+
+function failNoty(jqXHR) {
+    closeNoty();
+    var errorInfo = JSON.parse(jqXHR.responseText);
+    failedNote = new Noty({
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.status,
+        type: "error",
+        layout: "bottomRight"
+    }).show();
 }
 
 function renderEditBtn(data, type, row) {

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 public abstract class AbstractRestController<T extends BaseEntity, ID> {
@@ -42,8 +43,8 @@ public abstract class AbstractRestController<T extends BaseEntity, ID> {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<T> create(@RequestBody T dto) {
-        final T created = crudService.create(dto);
+    public ResponseEntity<T> create(@Valid @RequestBody T entity) {
+        final T created = crudService.create(entity);
         return ResponseEntity.created(ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("{id}")

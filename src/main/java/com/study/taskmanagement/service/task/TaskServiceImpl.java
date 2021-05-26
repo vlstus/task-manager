@@ -7,6 +7,7 @@ import com.study.taskmanagement.repository.project.ProjectRepository;
 import com.study.taskmanagement.repository.project.TaskRepository;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
+import com.study.taskmanagement.service.exception.BusinessLayerException;
 import com.study.taskmanagement.service.project.ProjectService;
 import com.study.taskmanagement.service.user.UserService;
 import org.springframework.stereotype.Service;
@@ -42,8 +43,10 @@ public class TaskServiceImpl
     }
 
     private void fetchData(Task task) {
-        final User taskManager = userRepository.findByName(task.getManager().getName());
-        final User taskDeveloper = userRepository.findByName(task.getDeveloper().getName());
+        final User taskManager = userRepository.findByName(task.getManager().getName())
+                .orElseThrow(BusinessLayerException::new);
+        final User taskDeveloper = userRepository.findByName(task.getDeveloper().getName())
+                .orElseThrow(BusinessLayerException::new);
         final Project taskProject = projectRepository.findByName(task.getProject().getName());
         task.setManager(taskManager);
         task.setDeveloper(taskDeveloper);
