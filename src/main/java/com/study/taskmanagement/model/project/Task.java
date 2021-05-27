@@ -1,5 +1,8 @@
 package com.study.taskmanagement.model.project;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerator;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.model.user.User;
 import lombok.AllArgsConstructor;
@@ -21,6 +24,9 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Entity
 @Table(name = "tasks")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.IntSequenceGenerator.class
+)
 public class Task
         extends BaseEntity {
 

@@ -46,7 +46,8 @@ public class TaskControllerTest
     @Test
     void createTest()
             throws Exception {
-        final Task task = new Task("New", UserTestData.TEST_MANAGER, Status.TO_DO, UserTestData.TEST_DEVELOPER, ProjectTestData.TEST_PROJECT);
+        final Task task = new Task("NewTask", UserTestData.TEST_MANAGER, Status.TO_DO, UserTestData.TEST_DEVELOPER, ProjectTestData.TEST_PROJECT);
+        task.setProject(ProjectTestData.TEST_PROJECT);
         final MvcResult mvcResult = mockMvc.perform(post("/api/v1/tasks/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(task)))
@@ -58,7 +59,8 @@ public class TaskControllerTest
                 objectMapper.writeValueAsString(task),
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("id", (first, second) -> true)));
+                        new Customization("id", (first, second) -> true),
+                        new Customization("project.tasks", (first, second) -> true)));
     }
 
     @Test
@@ -73,17 +75,18 @@ public class TaskControllerTest
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(
                         JSONCompareMode.LENIENT,
-                        new Customization("[id=100000].project", (first, second) -> true)));
+                        new Customization("[@id=1].project", (first, second) -> true)));
     }
 
     @Test
     void updateTest()
             throws Exception {
-        final Task project = ProjectTestData.TaskTestData.copyOf(ProjectTestData.TaskTestData.TEST_TASK);
-        project.setName("New");
-        mockMvc.perform(put("/api/v1/tasks/{id}", project.getId())
+        final Task task = ProjectTestData.TaskTestData.copyOf(ProjectTestData.TaskTestData.TEST_TASK);
+        task.setName("NewUser");
+        task.setProject(ProjectTestData.TEST_PROJECT);
+        mockMvc.perform(put("/api/v1/tasks/{id}", task.getId())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(project)))
+                .content(objectMapper.writeValueAsString(task)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
@@ -91,9 +94,7 @@ public class TaskControllerTest
     @Test
     void deleteTest()
             throws Exception {
-        mockMvc.perform(delete("/api/v1/tasks/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(ProjectTestData.TEST_PROJECT)))
+        mockMvc.perform(delete("/api/v1/tasks/{id}", ProjectTestData.TaskTestData.TEST_TASK_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }

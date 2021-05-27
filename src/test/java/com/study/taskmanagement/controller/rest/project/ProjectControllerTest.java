@@ -43,7 +43,7 @@ public class ProjectControllerTest
     @Test
     void createTest()
             throws Exception {
-        final Project project = new Project("New", UserTestData.TEST_MANAGER, null);
+        final Project project = new Project("NewProject", UserTestData.TEST_MANAGER, null);
         final MvcResult mvcResult = mockMvc.perform(post("/api/v1/projects/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(project)))
@@ -70,14 +70,14 @@ public class ProjectControllerTest
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(
                         JSONCompareMode.LENIENT,
-                        new Customization("[id=100000].tasks", (first, second) -> true)));
+                        new Customization("[@id=1].tasks", (first, second) -> true)));
     }
 
     @Test
     void updateTest()
             throws Exception {
         final Project project = ProjectTestData.copyOf(ProjectTestData.TEST_PROJECT);
-        project.setName("New");
+        project.setName("NewPROJECT");
         mockMvc.perform(put("/api/v1/projects/{id}", project.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(project)))
@@ -88,9 +88,7 @@ public class ProjectControllerTest
     @Test
     void deleteTest()
             throws Exception {
-        mockMvc.perform(delete("/api/v1/projects/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(ProjectTestData.TEST_PROJECT)))
+        mockMvc.perform(delete("/api/v1/projects/{id}", ProjectTestData.TEST_PROJECT_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }

@@ -35,7 +35,7 @@ public class UserControllerTest
     @Test
     void createTest()
             throws Exception {
-        final User user = new User("New", "Pass", Role.ADMIN);
+        final User user = new User("NewUser", "Pass", Role.ADMIN);
         final MvcResult mvcResult = mockMvc.perform(post("/api/v1/users/")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user)))
@@ -63,7 +63,7 @@ public class UserControllerTest
     void updateTest()
             throws Exception {
         final User user = UserTestData.copyOf(UserTestData.TEST_MANAGER);
-        user.setName("New");
+        user.setName("NewName");
         mockMvc.perform(put("/api/v1/users/{id}", user.getId())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user)))
@@ -74,9 +74,7 @@ public class UserControllerTest
     @Test
     void deleteTest()
             throws Exception {
-        mockMvc.perform(delete("/api/v1/users/")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(UserTestData.TEST_DEVELOPER)))
+        mockMvc.perform(delete("/api/v1/users/{id}", UserTestData.TEST_DEVELOPER_ID))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
