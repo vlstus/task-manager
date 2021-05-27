@@ -8,6 +8,7 @@ import com.study.taskmanagement.model.project.Task;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import static com.study.taskmanagement.repository.project.ProjectTestData.TaskTestData.ABSENT_TASK;
 import static com.study.taskmanagement.repository.project.ProjectTestData.TaskTestData.TEST_TASK;
 import static com.study.taskmanagement.repository.user.UserTestData.TEST_DEVELOPER;
 import static com.study.taskmanagement.repository.user.UserTestData.TEST_MANAGER;
@@ -22,7 +23,12 @@ public final class ProjectTestData {
                 TEST_MANAGER,
                 Status.TO_DO,
                 TEST_DEVELOPER,
-                TEST_PROJECT);
+                null);
+        public static final Task ABSENT_TASK = new Task("Absent",
+                TEST_MANAGER,
+                Status.TO_DO,
+                TEST_DEVELOPER,
+                null);
 
         static {
             TEST_TASK.setId(TEST_TASK_ID);
@@ -39,9 +45,12 @@ public final class ProjectTestData {
     public static final Project TEST_PROJECT = new Project("Task Management",
             TEST_MANAGER,
             new ArrayList<>(Collections.singletonList(TEST_TASK)));
+    public static final Project ABSENT_PROJECT = new Project(null, TEST_MANAGER, null);
 
     static {
         TEST_PROJECT.setId(TEST_PROJECT_ID);
+        TEST_TASK.setProject(TEST_PROJECT);
+        ABSENT_TASK.setProject(TEST_PROJECT);
     }
 
     public static Project copyOf(Project project) {
