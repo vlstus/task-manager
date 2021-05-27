@@ -6,14 +6,20 @@ INSERT INTO users (id,name,password,role) VALUES
 (
 100000,
 'John Doe',
-'Password',
-'DEVELOPER'
+'$2a$06$a/9qGOaM0OV56tWx34kvHuWAG2cnSHG337JWtkzeMa6jML/6bVft2',
+'ROLE_DEVELOPER'
 ),
 (
 100001,
 'Jane Doe',
-'Password',
-'MANAGER'
+'$2a$06$a/9qGOaM0OV56tWx34kvHuWAG2cnSHG337JWtkzeMa6jML/6bVft2',
+'ROLE_MANAGER'
+),
+(
+100002,
+'Joe Doe',
+'$2a$06$a/9qGOaM0OV56tWx34kvHuWAG2cnSHG337JWtkzeMa6jML/6bVft2',
+'ROLE_ADMIN'
 );
 
 INSERT INTO projects (id,name,manager_id) VALUES

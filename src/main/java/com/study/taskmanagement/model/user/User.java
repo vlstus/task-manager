@@ -22,8 +22,7 @@ public class User
     @NotEmpty
     @Length(min = 4, max = 25)
     private String name;
-    @NotEmpty
-    @Length(min = 4, max = 25)
+    @Length(max = 100)
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;

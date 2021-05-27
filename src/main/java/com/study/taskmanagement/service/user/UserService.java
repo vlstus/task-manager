@@ -11,4 +11,6 @@ public interface UserService
 
     Collection<User> getByRole(Role role);
 
+    User getByName(String name);
+
 }
