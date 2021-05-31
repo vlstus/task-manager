@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+
+    <title th:text="#{application.profile}">Profile</title>
+
+    <th:block th:include="fragments/header.html ::  head"/>
+    <script th:src="@{/script/taskmanagement.profile.js}" rel="script" defer></script>
+</head>
+<body>
+<div class="jumbotron pt-4">
+    <div class="container">
+        <span hidden id="loggedUserId" th:text="${loggedUser.id}"></span>
+        <span hidden id="loggedUserName" th:text="${loggedUser.name}"></span>
+        <span hidden id="loggedUserRole" th:text="${loggedUser.role}"></span>
+        <h3 class="text-center" th:text="${loggedUser.name}">Profile details</h3>
+        <h2 class="text-center" th:text="${loggedUser.role}">Profile Role</h2>
+    </div>
+</div>
+
+<th:block sec:authorize="hasRole('ADMIN')" th:include="fragments/adminForm.html :: adminMenu"/>
+
+<th:block sec:authorize="hasRole('MANAGER')" th:include="fragments/profileProjectsForm.html :: profileProjectForm"/>
+
+</body>
+<footer>
+    <th:block th:include="fragments/footer.html :: footer"/>
+</footer>
+</html>

@@ -9,6 +9,10 @@ import com.study.taskmanagement.service.exception.BusinessLayerException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
 @Service
 public class ProjectServiceImpl
         extends AbstractService<Project, Integer>
@@ -33,6 +37,15 @@ public class ProjectServiceImpl
     public Project update(Project project, Integer entityId) {
         project.setManager(fetchManager(project.getManager()));
         return super.update(project, entityId);
+    }
+
+    @Override
+    public Collection<Project> getAllByUserId(Integer userId) {
+        log.info("Getting all projects for user with id {}",
+                userId);
+        ProjectRepository projectRepository = ((ProjectRepository) crudRepository);
+        return StreamSupport.stream(projectRepository.findByManagerId(userId).spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     private User fetchManager(User manager) {

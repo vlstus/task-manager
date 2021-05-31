@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,7 +32,7 @@ public class SecurityRestController {
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest request, HttpServletResponse response) {
         try {
             Authentication authentication =
                     authenticationManager.authenticate(
@@ -40,8 +42,13 @@ public class SecurityRestController {
             String token = tokenProvider.createToken(authenticatedUser.getName(),
                     String.valueOf(authenticatedUser.getRole()));
             Map<Object, Object> responseBody = new HashMap<>();
+            responseBody.put("id", authenticatedUser.getId());
             responseBody.put("username", authenticatedUser.getName());
             responseBody.put("token", token);
+
+            final Cookie authorizationCookie = new Cookie("Authorization", token);
+            authorizationCookie.setHttpOnly(true);
+            response.addCookie(authorizationCookie);
             return ResponseEntity.ok(responseBody);
         } catch (AuthenticationException authenticationException) {
             return new ResponseEntity<>("Invalid credentials", HttpStatus.FORBIDDEN);

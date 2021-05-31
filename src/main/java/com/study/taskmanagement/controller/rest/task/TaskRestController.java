@@ -13,6 +13,7 @@ import java.util.Collection;
 
 @RestController
 @RequestMapping("/api/v1/tasks")
+@PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
 public class TaskRestController
         extends AbstractRestController<Task, Integer> {
 
@@ -22,7 +23,7 @@ public class TaskRestController
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Collection<Task>> getAll() {
         return super.getAll();
     }
@@ -31,7 +32,7 @@ public class TaskRestController
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER')")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')")
     public ResponseEntity<Task> getById(@PathVariable Integer id) {
         return super.getById(id);
     }
@@ -40,7 +41,6 @@ public class TaskRestController
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Task> create(@RequestBody Task entity) {
         return super.create(entity);
     }
@@ -52,14 +52,14 @@ public class TaskRestController
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Override
-    @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER')")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')")
     public void update(@RequestBody Task entity, @PathVariable Integer id) {
         super.update(entity, id);
     }
 
     @DeleteMapping(path = "/{id}")
     @Override
-    @PreAuthorize("hasRole('MANAGER')")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     public void delete(@PathVariable Integer id) {
         super.delete(id);
     }

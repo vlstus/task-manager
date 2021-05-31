@@ -50,17 +50,21 @@ public class SecurityConfigurer
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers("/").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/v1/tokens").permitAll()
-                .antMatchers("/users").hasRole("ADMIN")
-                .antMatchers("/projects").hasAnyRole("ROLE_DEVELOPER", "ROLE_MANAGER")
+                .antMatchers("/login").permitAll()
+                .antMatchers("/script/**").permitAll()
+                .antMatchers("/users", "/tasks", "/projects").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(
                         (request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                                        authException.getLocalizedMessage()));
+                                        authException.getLocalizedMessage()))
+                .and()
+                .logout().disable();
 
         http
                 .addFilterBefore(jwtTokenFilter,
