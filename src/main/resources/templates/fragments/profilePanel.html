@@ -5,7 +5,7 @@
     <span sec:authorize="hasRole('ADMIN')"><a href="/users">Users</a></span>
     <span sec:authorize="hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')"><a
             href="/tasks">Tasks</a></span>
-    <span sec:authorize="hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')"><a
+    <span sec:authorize="hasRole('MANAGER') or hasRole('ADMIN')"><a
             href="/projects">Projects</a></span>
 </div>
 

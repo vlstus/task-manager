@@ -8,8 +8,8 @@
     <script sec:authorize="hasRole('ADMIN')" th:src="@{/script/taskmanagement.tasks.js}" rel="script"></script>
     <script sec:authorize="hasRole('MANAGER')" th:src="@{/script/taskmanagement.profile.manager.tasks.js}"
             rel="script"></script>
-    <!--    <script sec:authorize="hasRole('DEVELOPER')" th:src="@{/script/taskmanagement.profile.developer.tasks.js}"-->
-    <!--            rel="script"></script>-->
+    <script sec:authorize="hasRole('DEVELOPER')" th:src="@{/script/taskmanagement.profile.developer.tasks.js}"
+            rel="script"></script>
 
     <title th:text="#{app.tasks.list}">Tasks List</title>
 
@@ -29,11 +29,11 @@
             <tr>
                 <th>Name</th>
                 <th>Status</th>
-                <th sec:authorize="hasRole('ADMIN')">Manager</th>
-                <th>Developer</th>
+                <th sec:authorize="hasRole('ADMIN') or hasRole('DEVELOPER')">Manager</th>
+                <th sec:authorize="hasRole('ADMIN') or hasRole('MANAGER')">Developer</th>
                 <th>Project</th>
                 <th></th>
-                <th></th>
+                <th sec:authorize="hasRole('ADMIN') or hasRole('MANAGER')"></th>
             </tr>
             </thead>
         </table>
@@ -42,7 +42,7 @@
 
 <th:block sec:authorize="hasRole('ADMIN')" th:include="fragments/adminTaskEditForm.html :: editForm"/>
 <th:block sec:authorize="hasRole('MANAGER')" th:include="fragments/managerTaskEditForm.html :: editForm"/>
-<!--<th:block sec:authorize="hasRole('DEVELOPER')" th:include="fragments/developerTaskEditForm.html :: editForm"/>-->
+<th:block sec:authorize="hasRole('DEVELOPER')" th:include="fragments/developerTaskEditForm.html :: editForm"/>
 
 </body>
 <footer>

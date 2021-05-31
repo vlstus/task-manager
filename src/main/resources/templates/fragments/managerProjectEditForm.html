@@ -19,11 +19,10 @@
 
 
                         <div class="form-group">
-                            <input type="hidden" id="manager.id" name="manager.id" th:attr="value=${loggedUser.id}">
-                            <input type="hidden" id="manager.name" name="manager.name"
-                                   th:attr="value=${loggedUser.name}">
-                            <input type="hidden" id="manager.role" name="manager.role"
-                                   th:attr="value=${loggedUser.role}">
+                            <input type="hidden" id="project.id" name="project.id">
+                            <label for="project.name" class="col-form-label"></label>
+                            <select id="project.name" name="project.name">
+                            </select>
                         </div>
 
                     </form>
