@@ -55,7 +55,7 @@ public class SecurityConfigurer
                 .antMatchers("/api/v1/tokens").permitAll()
                 .antMatchers("/login").permitAll()
                 .antMatchers("/script/**").permitAll()
-                .antMatchers("/users", "/tasks", "/projects").hasRole("ADMIN")
+                .antMatchers("/users", "/tasks", "/projects").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling()

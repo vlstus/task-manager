@@ -2,16 +2,13 @@ package com.study.taskmanagement.controller.view;
 
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.security.JwtTokenProvider;
-import com.study.taskmanagement.security.UserDetailsImpl;
 import com.study.taskmanagement.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,8 +71,7 @@ public class RootController {
     }
 
     @GetMapping("profile")
-    public String profile(@AuthenticationPrincipal UserDetailsImpl loggedUser, ModelMap modelMap) {
-        modelMap.addAttribute("loggedUser", loggedUser.getUser());
+    public String profile() {
         return "profile";
     }
 

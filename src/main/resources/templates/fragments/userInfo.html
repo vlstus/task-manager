@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="container" th:fragment="userInfo">
+    <div class="container">
+        <span hidden id="loggedUserId" th:text="${loggedUser.id}"></span>
+        <span hidden id="loggedUserName" th:text="${loggedUser.name}"></span>
+        <span hidden id="loggedUserRole" th:text="${loggedUser.role}"></span>
+        <h3 class="text-center" th:text="${loggedUser.name}">Profile details</h3>
+        <h2 class="text-center" th:text="${loggedUser.role}">Profile Role</h2>
+    </div>
+</div>
+
+</html>

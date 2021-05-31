@@ -3,25 +3,33 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="utf-8"/>
-
+    <script sec:authorize="isAuthenticated()" th:scr="@{/script/jsog.js}" rel="script"></script>
     <th:block th:include="fragments/header.html :: head"/>
-    <script th:src="@{/script/taskmanagement.tasks.js}" rel="script"></script>
+    <script sec:authorize="hasRole('ADMIN')" th:src="@{/script/taskmanagement.tasks.js}" rel="script"></script>
+    <script sec:authorize="hasRole('MANAGER')" th:src="@{/script/taskmanagement.profile.manager.tasks.js}"
+            rel="script"></script>
+    <!--    <script sec:authorize="hasRole('DEVELOPER')" th:src="@{/script/taskmanagement.profile.developer.tasks.js}"-->
+    <!--            rel="script"></script>-->
+
     <title th:text="#{app.tasks.list}">Tasks List</title>
 
 </head>
 
 <body>
 
+<th:block th:include="fragments/userInfo.html :: userInfo"/>
+
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center">Tasks</h3>
-        <button class="btn btn-success" onclick="add()">Add</button>
+        <button sec:authorize="hasRole('ADMIN') or hasRole('MANAGER')" class="btn btn-success" onclick="add()">Add
+        </button>
         <table id="dataTable" class="table table-striped">
             <thead>
             <tr>
                 <th>Name</th>
                 <th>Status</th>
-                <th>Manager</th>
+                <th sec:authorize="hasRole('ADMIN')">Manager</th>
                 <th>Developer</th>
                 <th>Project</th>
                 <th></th>
@@ -32,67 +40,12 @@
     </div>
 </div>
 
-
-<div class="modal fade" tabindex="-1" id="editRow">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="modalTitle"></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="detailsForm">
-                    <input type="hidden" id="id" name="id">
-
-                    <div class="form-group">
-                        <label for="name" class="col-form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="status" class="col-form-label">Status</label>
-                        <select id="status" name="status">
-                            <option value="TO_DO">TO_DO</option>
-                            <option value="IN_PROGRESS">IN_PROGRESS</option>
-                            <option value="DONE">DONE</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="hidden" id="manager.id" name="manager.id">
-                        <label for="manager.name" class="col-form-label"></label>
-                        <select id="manager.name" name="manager.name">
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="hidden" id="developer.id" name="developer.id">
-                        <label for="developer.name" class="col-form-label"></label>
-                        <select id="developer.name" name="developer.name">
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <input type="hidden" id="project.id" name="project.id">
-                        <label for="project.name" class="col-form-label"></label>
-                        <select id="project.name" name="project.name">
-                        </select>
-                    </div>
-
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    <span class="">Cancel</span>
-                </button>
-                <button type="button" class="btn btn-primary" onclick="save()">
-                    <span class="">Save</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<th:block sec:authorize="hasRole('ADMIN')" th:include="fragments/adminTaskEditForm.html :: editForm"/>
+<th:block sec:authorize="hasRole('MANAGER')" th:include="fragments/managerTaskEditForm.html :: editForm"/>
+<!--<th:block sec:authorize="hasRole('DEVELOPER')" th:include="fragments/developerTaskEditForm.html :: editForm"/>-->
 
 </body>
+<footer>
+    <th:block th:include="fragments/footer.html :: footer"/>
+</footer>
 </html>

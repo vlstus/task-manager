@@ -1,12 +1,16 @@
 package com.study.taskmanagement.controller.rest.user;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.taskmanagement.controller.rest.AbstractRestController;
 import com.study.taskmanagement.model.project.Project;
+import com.study.taskmanagement.model.project.Task;
 import com.study.taskmanagement.model.user.Role;
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.security.UserDetailsImpl;
 import com.study.taskmanagement.service.project.ProjectService;
+import com.study.taskmanagement.service.task.TaskService;
 import com.study.taskmanagement.service.user.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +31,20 @@ class UserRestController
         extends AbstractRestController<User, Integer> {
 
     private final ProjectService projectService;
+    private final TaskService taskService;
+
+    @Autowired
+    ObjectMapper objectMapper;
 
     protected UserRestController(UserService userService,
-                                 ProjectService projectService) {
+                                 ProjectService projectService,
+                                 TaskService taskService) {
         super(userService);
         this.projectService = projectService;
+        this.taskService = taskService;
     }
 
+    @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @GetMapping(params = {"role"})
     public List<User> getByRole(@RequestParam("role") Role role) {
         UserService userService = (UserService) crudService;
@@ -90,6 +101,16 @@ class UserRestController
             throw new IllegalArgumentException("Requested user id is not consistent with logged user id");
         }
         return ResponseEntity.ok(new ArrayList<>(projectService.getAllByUserId(userId)));
+    }
+
+    @PreAuthorize("hasAnyRole('DEVELOPER','MANAGER')")
+    @GetMapping(path = "/{userId}/tasks")
+    public ResponseEntity<List<Task>> getTasks(@PathVariable Integer userId,
+                                               @AuthenticationPrincipal UserDetailsImpl loggedUser) {
+        if (!userId.equals(loggedUser.getUser().getId())) {
+            throw new IllegalArgumentException("Requested user id is not consistent with logged user id");
+        }
+        return ResponseEntity.ok(new ArrayList<>(taskService.getAllByUser(userId, loggedUser.getUser().getRole())));
     }
 
 }

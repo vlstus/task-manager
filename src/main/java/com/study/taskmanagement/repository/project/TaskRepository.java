@@ -32,4 +32,8 @@ public interface TaskRepository
     )
     Optional<Task> findByIdWithStaffIfExists(Integer id);
 
+    Iterable<Task> findAllByDeveloperId(Integer developerId);
+
+    Iterable<Task> findAllByManagerId(Integer managerId);
+
 }

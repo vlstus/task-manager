@@ -1,6 +1,7 @@
-let ajaxUrl, datatableApi, form, updateFormCallback, createFormCallback, editRow;
+let ajaxUrl, datatableApi, form, updateFormCallback, createFormCallback, editRow, ctx;
 
-function makeEditable(ctx, datatableOpts) {
+function makeEditable(context, datatableOpts) {
+    ctx = context;
     ajaxUrl = ctx.dataTableUrl;
     $.extend($.fn.dataTable.defaults, {
         "ajax": ajaxUrl,
@@ -54,7 +55,7 @@ function sendRequestAndUpdateTable(reqType, reqUrl) {
         url: reqUrl,
         contentType: "application/json",
         data: JSON.stringify(data),
-    }).done(function () {
+    }).done(function (data) {
         $(editRow).modal("hide");
         updateFormCallback();
     });
