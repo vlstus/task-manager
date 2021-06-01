@@ -3,7 +3,8 @@ package com.study.taskmanagement.security.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 
-public class JwtAuthenticationException extends AuthenticationException {
+public class JwtAuthenticationException
+        extends AuthenticationException {
 
     private HttpStatus httpStatus;
 

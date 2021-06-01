@@ -16,8 +16,8 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,7 +40,9 @@ public class TaskControllerTest
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(
                         JSONCompareMode.LENIENT,
-                        new Customization("project", (first, second) -> true)));
+                        new Customization("project", (first, second) -> true),
+                        new Customization("developer.password", (first, second) -> true),
+                        new Customization("manager.password", (first, second) -> true)));
     }
 
     @Test
@@ -49,6 +51,7 @@ public class TaskControllerTest
         final Task task = new Task("NewTask", UserTestData.TEST_MANAGER, Status.TO_DO, UserTestData.TEST_DEVELOPER, ProjectTestData.TEST_PROJECT);
         task.setProject(ProjectTestData.TEST_PROJECT);
         final MvcResult mvcResult = mockMvc.perform(post("/api/v1/tasks/")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(task)))
                 .andDo(print())
@@ -60,7 +63,9 @@ public class TaskControllerTest
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(JSONCompareMode.LENIENT,
                         new Customization("id", (first, second) -> true),
-                        new Customization("project.tasks", (first, second) -> true)));
+                        new Customization("project", (first, second) -> true),
+                        new Customization("developer.password", (first, second) -> true),
+                        new Customization("manager.password", (first, second) -> true)));
     }
 
     @Test
@@ -75,7 +80,9 @@ public class TaskControllerTest
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(
                         JSONCompareMode.LENIENT,
-                        new Customization("[@id=1].project", (first, second) -> true)));
+                        new Customization("[*].project", (first, second) -> true),
+                        new Customization("[*].developer", (first, second) -> true),
+                        new Customization("[*].manager", (first, second) -> true)));
     }
 
     @Test
@@ -85,6 +92,7 @@ public class TaskControllerTest
         task.setName("NewUser");
         task.setProject(ProjectTestData.TEST_PROJECT);
         mockMvc.perform(put("/api/v1/tasks/{id}", task.getId())
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(task)))
                 .andDo(print())
@@ -94,7 +102,8 @@ public class TaskControllerTest
     @Test
     void deleteTest()
             throws Exception {
-        mockMvc.perform(delete("/api/v1/tasks/{id}", ProjectTestData.TaskTestData.TEST_TASK_ID))
+        mockMvc.perform(delete("/api/v1/tasks/{id}", ProjectTestData.TaskTestData.TEST_TASK_ID)
+                .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }

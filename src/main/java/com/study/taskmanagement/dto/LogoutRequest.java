@@ -9,10 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
-public class LoginRequest {
-
-    private String userName;
-    private String password;
+public class LogoutRequest {
 
     private HttpServletRequest request;
     private HttpServletResponse response;

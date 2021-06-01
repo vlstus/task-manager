@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MvcResult;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -25,18 +26,25 @@ public class UserControllerTest
     @Test
     void getByIdTest()
             throws Exception {
-        mockMvc.perform(get("/api/v1/users/{id}", UserTestData.TEST_DEVELOPER_ID))
+        MvcResult mvcResult = mockMvc.perform(get("/api/v1/users/{id}", UserTestData.TEST_DEVELOPER_ID))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(UserTestData.TEST_DEVELOPER)));
+                .andReturn();
+        JSONAssert.assertEquals(
+                objectMapper.writeValueAsString(UserTestData.copyOf(UserTestData.TEST_DEVELOPER)),
+                mvcResult.getResponse().getContentAsString(),
+                new CustomComparator(JSONCompareMode.LENIENT,
+                        new Customization("id", (first, second) -> true),
+                        new Customization("password", (first, second) -> true)));
     }
 
     @Test
     void createTest()
             throws Exception {
-        final User user = new User("NewUser", "Pass", Role.ADMIN);
+        final User user = new User("NewUser", "Pass", Role.ROLE_ADMIN);
         final MvcResult mvcResult = mockMvc.perform(post("/api/v1/users/")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
@@ -47,16 +55,23 @@ public class UserControllerTest
                 objectMapper.writeValueAsString(user),
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("id", (first, second) -> true)));
+                        new Customization("id", (first, second) -> true),
+                        new Customization("password", (first, second) -> true)));
     }
 
     @Test
     void getAllTest()
             throws Exception {
-        mockMvc.perform(get("/api/v1/users/"))
+        MvcResult mvcResult = mockMvc.perform(get("/api/v1/users/"))
                 .andDo(print())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().json(objectMapper.writeValueAsString(UserTestData.TEST_USERS)));
+                .andReturn();
+        JSONAssert.assertEquals(
+                objectMapper.writeValueAsString(UserTestData.TEST_USERS),
+                mvcResult.getResponse().getContentAsString(),
+                new CustomComparator(JSONCompareMode.NON_EXTENSIBLE,
+                        new Customization("[*].id", (first, second) -> true),
+                        new Customization("[*].password", (first, second) -> true)));
     }
 
     @Test
@@ -65,6 +80,7 @@ public class UserControllerTest
         final User user = UserTestData.copyOf(UserTestData.TEST_MANAGER);
         user.setName("NewName");
         mockMvc.perform(put("/api/v1/users/{id}", user.getId())
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(user)))
                 .andDo(print())
@@ -74,7 +90,8 @@ public class UserControllerTest
     @Test
     void deleteTest()
             throws Exception {
-        mockMvc.perform(delete("/api/v1/users/{id}", UserTestData.TEST_DEVELOPER_ID))
+        mockMvc.perform(delete("/api/v1/users/{id}", UserTestData.TEST_DEVELOPER_ID)
+                .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }

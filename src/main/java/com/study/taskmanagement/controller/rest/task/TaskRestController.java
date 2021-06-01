@@ -22,8 +22,8 @@ public class TaskRestController
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    @Override
     @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public ResponseEntity<Collection<Task>> getAll() {
         return super.getAll();
     }
@@ -31,8 +31,8 @@ public class TaskRestController
     @GetMapping(
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
-    @Override
     @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')")
+    @Override
     public ResponseEntity<Task> getById(@PathVariable Integer id) {
         return super.getById(id);
     }
@@ -51,15 +51,16 @@ public class TaskRestController
             produces = MediaType.APPLICATION_JSON_VALUE
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Override
     @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')")
+    @Override
     public void update(@RequestBody Task entity, @PathVariable Integer id) {
         super.update(entity, id);
     }
 
     @DeleteMapping(path = "/{id}")
-    @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
+    @Override
     public void delete(@PathVariable Integer id) {
         super.delete(id);
     }

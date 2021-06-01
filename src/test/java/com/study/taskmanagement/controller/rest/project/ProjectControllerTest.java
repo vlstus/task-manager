@@ -15,6 +15,7 @@ import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.Collections;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -37,7 +38,8 @@ public class ProjectControllerTest
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(
                         JSONCompareMode.LENIENT,
-                        new Customization("tasks", (first, second) -> true)));
+                        new Customization("tasks", (first, second) -> true),
+                        new Customization("manager.password", (first, second) -> true)));
     }
 
     @Test
@@ -45,6 +47,7 @@ public class ProjectControllerTest
             throws Exception {
         final Project project = new Project("NewProject", UserTestData.TEST_MANAGER, null);
         final MvcResult mvcResult = mockMvc.perform(post("/api/v1/projects/")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(project)))
                 .andDo(print())
@@ -55,7 +58,8 @@ public class ProjectControllerTest
                 objectMapper.writeValueAsString(project),
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(JSONCompareMode.LENIENT,
-                        new Customization("id", (first, second) -> true)));
+                        new Customization("id", (first, second) -> true),
+                        new Customization("manager.password", (first, second) -> true)));
     }
 
     @Test
@@ -70,7 +74,8 @@ public class ProjectControllerTest
                 mvcResult.getResponse().getContentAsString(),
                 new CustomComparator(
                         JSONCompareMode.LENIENT,
-                        new Customization("[@id=1].tasks", (first, second) -> true)));
+                        new Customization("[*].tasks", (first, second) -> true),
+                        new Customization("[*].manager.password", (first, second) -> true)));
     }
 
     @Test
@@ -79,6 +84,7 @@ public class ProjectControllerTest
         final Project project = ProjectTestData.copyOf(ProjectTestData.TEST_PROJECT);
         project.setName("NewPROJECT");
         mockMvc.perform(put("/api/v1/projects/{id}", project.getId())
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(project)))
                 .andDo(print())
@@ -88,7 +94,8 @@ public class ProjectControllerTest
     @Test
     void deleteTest()
             throws Exception {
-        mockMvc.perform(delete("/api/v1/projects/{id}", ProjectTestData.TEST_PROJECT_ID))
+        mockMvc.perform(delete("/api/v1/projects/{id}", ProjectTestData.TEST_PROJECT_ID)
+                .with(csrf()))
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }

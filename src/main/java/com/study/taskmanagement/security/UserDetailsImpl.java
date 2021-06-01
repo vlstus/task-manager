@@ -2,11 +2,9 @@ package com.study.taskmanagement.security;
 
 import com.study.taskmanagement.model.user.User;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
