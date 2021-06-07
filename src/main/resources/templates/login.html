@@ -10,6 +10,9 @@
 <body>
 
 <form action="/login" method="post">
+    <div th:if="${param.error}" class="alert alert-danger" th:text="#{application.login.error}">
+        Invalid credentials.
+    </div>
     <input type="text" id="username" name="login" placeholder="login">
     <input type="password" id="password" name="password" placeholder="password">
     <button type="submit">login</button>

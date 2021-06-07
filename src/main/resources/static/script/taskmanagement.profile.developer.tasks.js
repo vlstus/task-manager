@@ -39,6 +39,9 @@ $(document).ready(function () {
                     data: "status"
                 },
                 {
+                    data: "manager.name"
+                },
+                {
                     data: "project.name"
                 },
                 {

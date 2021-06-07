@@ -38,11 +38,6 @@ $(document).ready(function () {
                 },
                 {
                     render: renderDeleteBtn
-                },
-                {
-                    render: function renderEditBtn(data, type, row) {
-                        return "<a href='/profile/projects?id=" + row.id + "'>Details</a>";
-                    }
                 }
             ]
         });

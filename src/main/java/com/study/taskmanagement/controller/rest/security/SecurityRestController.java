@@ -3,10 +3,8 @@ package com.study.taskmanagement.controller.rest.security;
 import com.study.taskmanagement.dto.LoginRequest;
 import com.study.taskmanagement.security.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,12 +28,8 @@ public class SecurityRestController {
                                    HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
         request.setRequest(httpRequest);
         request.setResponse(httpResponse);
-        try {
-            authenticationService.authenticate(request);
-            return ResponseEntity.ok().build();
-        } catch (AuthenticationException authenticationException) {
-            return new ResponseEntity<>("Invalid credentials", HttpStatus.FORBIDDEN);
-        }
+        authenticationService.authenticate(request);
+        return ResponseEntity.ok().build();
     }
 
 }

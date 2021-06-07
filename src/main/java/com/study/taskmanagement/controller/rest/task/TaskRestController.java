@@ -3,12 +3,14 @@ package com.study.taskmanagement.controller.rest.task;
 import com.study.taskmanagement.controller.rest.AbstractRestController;
 import com.study.taskmanagement.model.project.Task;
 import com.study.taskmanagement.service.CrudService;
+import com.study.taskmanagement.service.task.TaskService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -41,7 +43,7 @@ public class TaskRestController
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<Task> create(@RequestBody Task entity) {
+    public ResponseEntity<Task> create(@Valid @RequestBody Task entity) {
         return super.create(entity);
     }
 
@@ -53,7 +55,7 @@ public class TaskRestController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')")
     @Override
-    public void update(@RequestBody Task entity, @PathVariable Integer id) {
+    public void update(@Valid @RequestBody Task entity, @PathVariable Integer id) {
         super.update(entity, id);
     }
 
@@ -62,7 +64,7 @@ public class TaskRestController
     @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
     @Override
     public void delete(@PathVariable Integer id) {
-        super.delete(id);
+        ((TaskService) crudService).deleteById(id);
     }
 
 }

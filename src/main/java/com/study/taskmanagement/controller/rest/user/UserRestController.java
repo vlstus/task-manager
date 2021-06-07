@@ -7,6 +7,7 @@ import com.study.taskmanagement.model.project.Task;
 import com.study.taskmanagement.model.user.Role;
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.security.UserDetailsImpl;
+import com.study.taskmanagement.service.exception.NotOwnedException;
 import com.study.taskmanagement.service.project.ProjectService;
 import com.study.taskmanagement.service.task.TaskService;
 import com.study.taskmanagement.service.user.UserService;
@@ -97,9 +98,7 @@ class UserRestController
     @GetMapping(path = "/{userId}/projects")
     public ResponseEntity<List<Project>> getProjects(@PathVariable Integer userId,
                                                      @AuthenticationPrincipal UserDetailsImpl loggedUser) {
-        if (!userId.equals(loggedUser.getUser().getId())) {
-            throw new IllegalArgumentException("Requested user id is not consistent with logged user id");
-        }
+        checkIfOwn(userId, loggedUser);
         return ResponseEntity.ok(new ArrayList<>(projectService.getAllByUserId(userId)));
     }
 
@@ -107,10 +106,14 @@ class UserRestController
     @GetMapping(path = "/{userId}/tasks")
     public ResponseEntity<List<Task>> getTasks(@PathVariable Integer userId,
                                                @AuthenticationPrincipal UserDetailsImpl loggedUser) {
-        if (!userId.equals(loggedUser.getUser().getId())) {
-            throw new IllegalArgumentException("Requested user id is not consistent with logged user id");
-        }
+        checkIfOwn(userId, loggedUser);
         return ResponseEntity.ok(new ArrayList<>(taskService.getAllByUser(userId, loggedUser.getUser().getRole())));
+    }
+
+    private void checkIfOwn(Integer userId, UserDetailsImpl loggedUser) {
+        if (!userId.equals(loggedUser.getUser().getId())) {
+            throw new NotOwnedException("Requested user id is not consistent with logged user id");
+        }
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Collection;
 
 @RestController
@@ -40,7 +41,7 @@ public class ProjectRestController
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<Project> create(@RequestBody Project project) {
+    public ResponseEntity<Project> create(@Valid @RequestBody Project project) {
         return super.create(project);
     }
 
@@ -51,7 +52,7 @@ public class ProjectRestController
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Override
-    public void update(@RequestBody Project entity, @PathVariable Integer id) {
+    public void update(@Valid @RequestBody Project entity, @PathVariable Integer id) {
         super.update(entity, id);
     }
 

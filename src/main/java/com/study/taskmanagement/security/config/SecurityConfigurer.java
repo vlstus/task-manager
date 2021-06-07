@@ -50,7 +50,7 @@ public class SecurityConfigurer
         http
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/login").permitAll()
+                .antMatchers("/login**").permitAll()
                 .antMatchers("/api/v1/tokens").permitAll()
                 .antMatchers("/script/**").permitAll()
                 .antMatchers("/h2-console/**").hasRole("ADMIN")
@@ -71,6 +71,12 @@ public class SecurityConfigurer
                         (request, response, authException) ->
                                 response.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                                         authException.getLocalizedMessage()))
+                .and()
+                .formLogin()
+                .loginPage("/login")
+                .loginProcessingUrl("/login")
+                .failureForwardUrl("/login?error=true")
+                .successForwardUrl("/profile")
                 .and()
                 .logout().disable();
 

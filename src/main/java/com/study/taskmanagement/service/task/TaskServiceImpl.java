@@ -67,6 +67,11 @@ public class TaskServiceImpl
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteById(Integer id) {
+        crudRepository.deleteById(id);
+    }
+
     private void fetchTaskData(Task task) {
         final User manager = fetchUser(task.getManager());
         final User developer = fetchUser(task.getDeveloper());

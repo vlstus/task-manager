@@ -4,8 +4,10 @@ import com.study.taskmanagement.dto.LoginRequest;
 import com.study.taskmanagement.dto.LogoutRequest;
 import com.study.taskmanagement.security.AuthenticationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,6 +53,11 @@ public class RootController {
     @GetMapping("profile")
     public String profile() {
         return "profile";
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public String authExceptionHandler(BadCredentialsException e) {
+        return "redirect:/login?error";
     }
 
 }

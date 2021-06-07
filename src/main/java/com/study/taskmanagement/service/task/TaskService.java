@@ -11,4 +11,5 @@ public interface TaskService
 
     Collection<Task> getAllByUser(Integer userId, Role role);
 
+    void deleteById(Integer id);
 }
