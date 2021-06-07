@@ -1,5 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <footer th:fragment="footer" class="footer">
+    <div class="float-left">
+        <span th:text="#{application.language.change}">Change language</span>
+        <select id="locales">
+            <option value=""></option>
+            <option value="en" th:text="#{application.language.en}"></option>
+            <option value="ua" th:text="#{application.language.ua}"></option>
+            <option value="ru" th:text="#{application.language.ru}"></option>
+        </select>
+    </div>
+    <div sec:authorize="isAuthenticated()" class="float-left">
+        <a href="/profile" th:text="#{application.common.profile}">Profile</a>
+        <a href="/logout" th:text="#{application.common.logout}">Logout</a>
+    </div>
 </footer>
 </html>

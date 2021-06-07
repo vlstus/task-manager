@@ -58,7 +58,7 @@ public class UserServiceTest
 
     @Test
     void updateAbsent() {
-        final User absentUser = new User("Absent", "NoPass", Role.ADMIN);
+        final User absentUser = new User("Absent", "NoPass", Role.ROLE_ADMIN);
         assertThatThrownBy(() -> {
             userService.update(absentUser, UserTestData.TEST_DEVELOPER_ID);
         }).isInstanceOf(BusinessLayerException.class);

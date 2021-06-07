@@ -11,6 +11,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @NoArgsConstructor @AllArgsConstructor
@@ -22,9 +23,9 @@ public class User
     @NotEmpty
     @Length(min = 4, max = 25)
     private String name;
-    @NotEmpty
-    @Length(min = 4, max = 25)
+    @Length(min = 5, max = 100)
     private String password;
+    @NotNull
     @Enumerated(EnumType.STRING)
     private Role role;
 

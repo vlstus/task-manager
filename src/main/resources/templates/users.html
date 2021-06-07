@@ -6,7 +6,7 @@
 
     <th:block th:include="fragments/header.html :: head"/>
     <script th:src="@{/script/taskmanagement.users.js}" rel="script"></script>
-    <title th:text="#{app.users.list}">Users List</title>
+    <title th:text="#{application.users.list}">Users List</title>
 
 </head>
 
@@ -15,15 +15,15 @@
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center">Users</h3>
-        <button class="btn btn-success" onclick="add()">Add</button>
+        <button class="btn btn-success" onclick="add()" th:text="#{application.common.add}">Add</button>
         <table id="dataTable" class="table table-striped">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Password</th>
-                <th>Role</th>
-                <th></th>
-                <th></th>
+                <th th:text="#{application.users.name}">Name</th>
+                <th th:text="#{application.users.password}">Password</th>
+                <th th:text="#{application.users.role}">Role</th>
+                <th th:text="#{application.common.edit}"></th>
+                <th th:text="#{application.common.delete}"></th>
             </tr>
             </thead>
         </table>
@@ -43,21 +43,21 @@
                     <input type="hidden" id="id" name="id">
 
                     <div class="form-group">
-                        <label for="name" class="col-form-label">Name</label>
+                        <label for="name" class="col-form-label" th:text="#{application.users.name}">Name</label>
                         <input type="text" class="form-control" id="name" name="name">
                     </div>
 
                     <div class="form-group">
-                        <label for="password" class="col-form-label">Password</label>
-                        <input type="text" class="form-control" id="password" name="password">
+                        <label for="password" class="col-form-label" th:text="#{application.users.password}">Password</label>
+                        <input type="password" class="form-control" id="password" name="password">
                     </div>
 
                     <div class="form-group">
-                        <label for="role" class="col-form-label">Role</label>
+                        <label for="role" class="col-form-label" th:text="#{application.users.role}">Role</label>
                         <select id="role" name="role">
-                            <option value="ADMIN">ADMIN</option>
-                            <option value="MANAGER">MANAGER</option>
-                            <option value="DEVELOPER">DEVELOPER</option>
+                            <option value="ROLE_ADMIN">ADMIN</option>
+                            <option value="ROLE_MANAGER">MANAGER</option>
+                            <option value="ROLE_DEVELOPER">DEVELOPER</option>
                         </select>
                     </div>
 
@@ -65,10 +65,10 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="closeNoty()">
-                    <span class="">Cancel</span>
+                    <span class="" th:text="#{application.common.cancel}">Cancel</span>
                 </button>
                 <button type="button" class="btn btn-primary" onclick="save()">
-                    <span class="">Save</span>
+                    <span class="" th:text="#{application.common.save}">Save</span>
                 </button>
             </div>
         </div>
@@ -76,4 +76,7 @@
 </div>
 
 </body>
+<footer>
+    <th:block th:include="fragments/footer.html :: footer"/>
+</footer>
 </html>

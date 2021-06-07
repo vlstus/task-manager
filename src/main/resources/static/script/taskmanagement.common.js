@@ -1,7 +1,8 @@
-let ajaxUrl, datatableApi, form, updateTable, prepareFormCallback;
+let ajaxUrl, datatableApi, form, updateFormCallback, createFormCallback, editRow, ctx;
 
-function makeEditable(aUrl, datatableOpts, updTable, prepareCallback) {
-    ajaxUrl = aUrl;
+function makeEditable(context, datatableOpts) {
+    ctx = context;
+    ajaxUrl = ctx.dataTableUrl;
     $.extend($.fn.dataTable.defaults, {
         "ajax": ajaxUrl,
         "ajaxDataProp": "",
@@ -11,17 +12,18 @@ function makeEditable(aUrl, datatableOpts, updTable, prepareCallback) {
             "defaultContent": ""
         }]
     });
-    datatableApi = $('#dataTable').DataTable(datatableOpts);
-    form = $('#detailsForm');
-    updateTable = updTable;
-    prepareFormCallback = prepareCallback;
+    datatableApi = $(ctx.datatableId).DataTable(datatableOpts);
+    form = $(ctx.detailsFormId);
+    editRow = ctx.editRowId;
+    updateFormCallback = ctx.updFormCallback;
+    createFormCallback = ctx.createFormCallback;
 
-    $.fn.serializeObject = function() {
+    $.fn.serializeObject = function () {
         var arrayData, objectData;
         arrayData = this.serializeArray();
         objectData = {};
 
-        $.each(arrayData, function() {
+        $.each(arrayData, function () {
             this.value = !this.value ? '' : this.value;
             processObject(objectData, this.name, this.value);
         });
@@ -29,65 +31,24 @@ function makeEditable(aUrl, datatableOpts, updTable, prepareCallback) {
         return objectData;
     };
 
-    function processObject(obj, key, value){
-        if(key.indexOf('.') != -1) {
-            var attrs = key.split('.');
-            var tx = obj;
-            for (var i = 0; i < attrs.length - 1; i++) {
-                var isArray = attrs[i].indexOf('[') != -1;
-                var isNestedArray = isArray && (i != attrs.length-1);
-                var nestedArrayIndex = null;
-                if(isArray){
-                    nestedArrayIndex = attrs[i].substring(attrs[i].indexOf('[') +1 , attrs[i].indexOf(']'));
-                    attrs[i] = attrs[i].substring(0, attrs[i].indexOf('['));
-                    if (tx[attrs[i]] == undefined){
-                        tx[attrs[i]] = [];
-                    }
-                    tx = tx[attrs[i]];
-                    if(isNestedArray){
-                        if(tx[nestedArrayIndex] == undefined){
-                            tx[nestedArrayIndex] = {};
-                        }
-                        tx = tx[nestedArrayIndex];
-                    }
-
-                }else{
-                    if (tx[attrs[i]] == undefined){
-                        tx[attrs[i]] = {};
-                    }
-                    tx = tx[attrs[i]];
-                }
-            }
-            processObject(tx, attrs[attrs.length - 1], value);
-        }else{
-            var finalArrayIndex = null;
-            if(key.indexOf('[') != -1){
-                finalArrayIndex = key.substring(key.indexOf('[') +1 , key.indexOf(']'));
-                key = key.substring(0, key.indexOf('['));
-            }
-            if(finalArrayIndex == null){
-                obj[key] = value;
-            }else{
-                if(obj[key] == undefined){
-                    obj[key] = [];
-                }
-                obj[key][finalArrayIndex] = value;
-            }
-        }
-    }
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
-    $.ajaxSetup({cache: false});
+    $.ajaxSetup({
+        cache: false,
+        headers: {
+            "X-XSRF-TOKEN": getCookie("XSRF-TOKEN")
+        }
+    });
 
 }
 
 function add() {
     form.find(":input").val("");
-    if(prepareFormCallback){
-        prepareFormCallback();
+    if (createFormCallback) {
+        createFormCallback();
     }
-    $("#editRow").modal();
+    $(editRow).modal();
 }
 
 function sendRequestAndUpdateTable(reqType, reqUrl) {
@@ -97,18 +58,18 @@ function sendRequestAndUpdateTable(reqType, reqUrl) {
         url: reqUrl,
         contentType: "application/json",
         data: JSON.stringify(data),
-    }).done(function () {
-        $("#editRow").modal("hide");
-        updateTable();
+    }).done(function (data) {
+        $(editRow).modal("hide");
+        updateFormCallback();
     });
 }
 
 function save() {
     rowId = $("#id")[0].value;
-    if(rowId){
-        sendRequestAndUpdateTable("PUT", ajaxUrl + "/" + rowId);
+    if (rowId) {
+        sendRequestAndUpdateTable("PUT", ctx.putUrl + "/" + rowId);
     } else {
-        sendRequestAndUpdateTable("POST", ajaxUrl);
+        sendRequestAndUpdateTable("POST", ctx.postUrl);
     }
 
 }
@@ -119,49 +80,49 @@ function updateTableByData(data) {
 
 function updateRow(id) {
     form.find(":input").val("");
-    if(prepareFormCallback){
-        prepareFormCallback();
+    if (createFormCallback) {
+        createFormCallback();
     }
     $.ajax({
         type: "GET",
-        url: ajaxUrl + "/" + id
-    }).done(function(data) {
+        url: ctx.getByIdUrl + "/" + id
+    }).done(function (data) {
         let root;
         let process = (key, value) => {
-            if(!value){
+            if (!value) {
                 return;
             }
-            if(value.constructor === Object){
+            if (value.constructor === Object) {
                 root = key;
                 $.each(value, process);
                 root = null;
             } else {
-                if(root){
-                    if(document.getElementById(root + "." + key)){
+                if (root) {
+                    if (document.getElementById(root + "." + key)) {
                         document.getElementById(root + "." + key).value = value;
                     }
                 } else {
-                    if(document.getElementById(key)){
+                    if (document.getElementById(key)) {
                         document.getElementById(key).value = value;
                     }
                 }
 
             }
         }
-        $.each(data,function(key,value) {
+        $.each(data, function (key, value) {
             process(key, value);
         })
-        $('#editRow').modal();
+        $(editRow).modal();
     });
 }
 
 function deleteRow(id) {
     if (confirm('sure?')) {
         $.ajax({
-            url: ajaxUrl + "/" + id,
+            url: ctx.deleteUrl + "/" + id,
             type: "DELETE"
         }).done(function () {
-            updateTable();
+            updateFormCallback();
         });
     }
 }
@@ -190,7 +151,9 @@ function failNoty(jqXHR) {
     closeNoty();
     var errorInfo = JSON.parse(jqXHR.responseText);
     failedNote = new Noty({
-        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;" + errorInfo.status,
+        text: "<span class='fa fa-lg fa-exclamation-circle'></span> &nbsp;"
+            + errorInfo.errorCode + "<br>" +
+            errorInfo.messages.join("<br>"),
         type: "error",
         layout: "bottomRight"
     }).show();
@@ -200,6 +163,70 @@ function renderEditBtn(data, type, row) {
     return "<button class='btn btn-info' onclick='updateRow(" + row.id + ");'>Edit</button>";
 }
 
-function renderDeleteBtn(data, type, row){
+function renderDeleteBtn(data, type, row) {
     return "<button class='btn btn-danger' onclick='deleteRow(" + row.id + ");'>Delete</button>";
+}
+
+
+function processObject(obj, key, value) {
+    if (key.indexOf('.') != -1) {
+        var attrs = key.split('.');
+        var tx = obj;
+        for (var i = 0; i < attrs.length - 1; i++) {
+            var isArray = attrs[i].indexOf('[') != -1;
+            var isNestedArray = isArray && (i != attrs.length - 1);
+            var nestedArrayIndex = null;
+            if (isArray) {
+                nestedArrayIndex = attrs[i].substring(attrs[i].indexOf('[') + 1, attrs[i].indexOf(']'));
+                attrs[i] = attrs[i].substring(0, attrs[i].indexOf('['));
+                if (tx[attrs[i]] == undefined) {
+                    tx[attrs[i]] = [];
+                }
+                tx = tx[attrs[i]];
+                if (isNestedArray) {
+                    if (tx[nestedArrayIndex] == undefined) {
+                        tx[nestedArrayIndex] = {};
+                    }
+                    tx = tx[nestedArrayIndex];
+                }
+
+            } else {
+                if (tx[attrs[i]] == undefined) {
+                    tx[attrs[i]] = {};
+                }
+                tx = tx[attrs[i]];
+            }
+        }
+        processObject(tx, attrs[attrs.length - 1], value);
+    } else {
+        var finalArrayIndex = null;
+        if (key.indexOf('[') != -1) {
+            finalArrayIndex = key.substring(key.indexOf('[') + 1, key.indexOf(']'));
+            key = key.substring(0, key.indexOf('['));
+        }
+        if (finalArrayIndex == null) {
+            obj[key] = value;
+        } else {
+            if (obj[key] == undefined) {
+                obj[key] = [];
+            }
+            obj[key][finalArrayIndex] = value;
+        }
+    }
+}
+
+function getCookie(cname) {
+    var name = cname + "=";
+    var decodedCookie = decodeURIComponent(document.cookie);
+    var ca = decodedCookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
+    }
+    return "";
 }

@@ -5,69 +5,39 @@
     <meta charset="utf-8"/>
 
     <th:block th:include="fragments/header.html :: head"/>
-    <script th:src="@{/script/taskmanagement.projects.js}" rel="script"></script>
-    <title th:text="#{app.projects.list}">Projects List</title>
+    <script sec:authorize="hasRole('ADMIN')" th:src="@{/script/taskmanagement.projects.js}" rel="script"></script>
+    <script sec:authorize="hasRole('MANAGER')" th:src="@{/script/taskmanagement.profile.projects.js}"
+            rel="script"></script>
+    <title th:text="#{application.projects.list}">Projects List</title>
 
 </head>
 
 <body>
 
+<th:block th:include="fragments/userInfo.html :: userInfo"/>
+
 <div class="jumbotron pt-4">
     <div class="container">
-        <h3 class="text-center">Projects</h3>
-        <button class="btn btn-success" onclick="add()">Add</button>
+        <h3 class="text-center" th:text="#{application.projects.list}">Projects</h3>
+        <button class="btn btn-success" onclick="add()" th:text="#{application.common.add}">Add</button>
         <table id="dataTable" class="table table-striped">
             <thead>
             <tr>
-                <th>Name</th>
-                <th>Manager</th>
-                <th></th>
-                <th></th>
-                <th></th>
+                <th th:text="#{application.projects.name}">Name</th>
+                <th sec:authorize="hasRole('ADMIN')" th:text="#{application.projects.manager}">Manager</th>
+                <th th:text="#{application.common.edit}"></th>
+                <th th:text="#{application.common.delete}"></th>
             </tr>
             </thead>
         </table>
     </div>
 </div>
 
-
-<div class="modal fade" tabindex="-1" id="editRow">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="modalTitle"></h4>
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="detailsForm">
-                    <input type="hidden" id="id" name="id">
-
-                    <div class="form-group">
-                        <label for="name" class="col-form-label">Name</label>
-                        <input type="text" class="form-control" id="name" name="name">
-                    </div>
-
-
-                    <div class="form-group">
-                        <input type="hidden" id="manager.id" name="manager.id">
-                        <label for="manager.name" class="col-form-label"></label>
-                        <select id="manager.name" name="manager.name">
-                        </select>
-                    </div>
-
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    <span class="">Cancel</span>
-                </button>
-                <button type="button" class="btn btn-primary" onclick="save()">
-                    <span class="">Save</span>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
+<th:block sec:authorize="hasRole('ADMIN')" th:include="fragments/adminProjectEditForm.html :: editForm"/>
+<th:block sec:authorize="hasRole('MANAGER')" th:include="fragments/managerProjectEditForm.html :: editForm"/>
 
 </body>
+<footer>
+    <th:block th:include="fragments/footer.html :: footer"/>
+</footer>
 </html>

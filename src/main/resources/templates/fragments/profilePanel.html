@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<div class="container" th:fragment="profileMenu">
+    <span sec:authorize="hasRole('ADMIN')"><a href="/users" th:text="#{application.common.users}">Users</a></span>
+    <span sec:authorize="hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')"><a
+            href="/tasks" th:text="#{application.common.tasks}">Tasks</a></span>
+    <span sec:authorize="hasRole('MANAGER') or hasRole('ADMIN')"><a
+            href="/projects" th:text="#{application.common.projects}">Projects</a></span>
+</div>
+
+</html>

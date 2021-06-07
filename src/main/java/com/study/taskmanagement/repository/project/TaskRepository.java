@@ -27,9 +27,13 @@ public interface TaskRepository
                     "projects project " +
                     "ON task.project_id = project.id " +
                     "WHERE " +
-                    "project.id = ?1",
+                    "task.id = ?1",
             nativeQuery = true
     )
     Optional<Task> findByIdWithStaffIfExists(Integer id);
+
+    Iterable<Task> findAllByDeveloperId(Integer developerId);
+
+    Iterable<Task> findAllByManagerId(Integer managerId);
 
 }

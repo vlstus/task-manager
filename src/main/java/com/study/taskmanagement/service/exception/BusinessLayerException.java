@@ -1,17 +1,24 @@
 package com.study.taskmanagement.service.exception;
 
+import org.springframework.context.MessageSourceResolvable;
+
 public class BusinessLayerException
-        extends RuntimeException {
+        extends RuntimeException
+        implements MessageSourceResolvable {
 
-    public BusinessLayerException() {
+    private final String[] messageCodes;
+
+    public BusinessLayerException(String... messageCodes) {
+        this.messageCodes = messageCodes;
     }
 
-    public BusinessLayerException(String message) {
-        super(message);
+    public BusinessLayerException(Throwable cause, String... messageCodes) {
+        super(cause);
+        this.messageCodes = messageCodes;
     }
 
-    public BusinessLayerException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public String[] getCodes() {
+        return messageCodes;
     }
-
 }

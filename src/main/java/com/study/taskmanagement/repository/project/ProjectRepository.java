@@ -32,4 +32,6 @@ public interface ProjectRepository
     )
     Optional<Project> findByIdWithManagerIfExists(Integer id);
 
+    Iterable<Project> findByManagerId(Integer managerId);
+
 }

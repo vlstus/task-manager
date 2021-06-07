@@ -1,7 +1,8 @@
 package com.study.taskmanagement.service;
 
 import com.study.taskmanagement.model.BaseEntity;
-import com.study.taskmanagement.service.exception.BusinessLayerException;
+import com.study.taskmanagement.service.exception.NotFoundException;
+import com.study.taskmanagement.service.exception.NotOwnedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.repository.CrudRepository;
@@ -36,7 +37,7 @@ public abstract class AbstractService<T extends BaseEntity, ID>
                 !(entity.getId().equals(entityId)) ||
                 !crudRepository.existsById(entityId)) {
             log.warn("Failed to update entity {}", entity);
-            throw new BusinessLayerException();
+            throw new NotOwnedException("application.business.notOwned");
         }
         return crudRepository.save(entity);
     }
@@ -45,7 +46,7 @@ public abstract class AbstractService<T extends BaseEntity, ID>
     public T get(ID id) {
         log.info("Getting entity with id {}", id);
         return crudRepository.findById(id)
-                .orElseThrow(BusinessLayerException::new);
+                .orElseThrow(() -> new NotFoundException("application.business.notFound"));
     }
 
     @Override

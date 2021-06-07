@@ -1,8 +1,7 @@
 package com.study.taskmanagement.model.project;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.model.user.User;
@@ -27,9 +26,6 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "projects")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.IntSequenceGenerator.class
-)
 public class Project
         extends BaseEntity {
 
@@ -49,6 +45,7 @@ public class Project
     @NotNull
     private User manager;
     @OneToMany(mappedBy = "project")
+    @JsonIgnore
     private List<Task> tasks;
 
 }

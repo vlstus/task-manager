@@ -21,7 +21,7 @@ CREATE TABLE projects
     manager_id      INT,
     foreign key (manager_id) references users(id) ON DELETE SET NULL
 );
-CREATE UNIQUE INDEX unique_projectName_idx ON projects(name);
+CREATE UNIQUE INDEX unique_projectName_idx ON projects(name,manager_id);
 
 CREATE TABLE tasks
 (

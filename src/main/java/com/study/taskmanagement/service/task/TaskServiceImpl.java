@@ -2,14 +2,20 @@ package com.study.taskmanagement.service.task;
 
 import com.study.taskmanagement.model.project.Project;
 import com.study.taskmanagement.model.project.Task;
+import com.study.taskmanagement.model.user.Role;
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.project.ProjectRepository;
 import com.study.taskmanagement.repository.project.TaskRepository;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
-import com.study.taskmanagement.service.exception.BusinessLayerException;
+import com.study.taskmanagement.service.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class TaskServiceImpl
@@ -43,8 +49,27 @@ public class TaskServiceImpl
     @Override
     public Task get(Integer id) {
         log.info("Getting entity with id {}", id);
-        return ((TaskRepository)crudRepository).findByIdWithStaffIfExists(id)
-                .orElseThrow(BusinessLayerException::new);
+        return ((TaskRepository) crudRepository).findByIdWithStaffIfExists(id)
+                .orElseThrow(()-> new NotFoundException("application.tasks.notFound"));
+    }
+
+    @Override
+    public Collection<Task> getAllByUser(Integer userId, Role role) {
+        log.info("Getting all task for user with id {}", userId);
+        TaskRepository taskRepository = (TaskRepository) crudRepository;
+        Iterable<Task> userTasks = Collections.emptyList();
+        if (role.equals(Role.ROLE_DEVELOPER)) {
+            userTasks = taskRepository.findAllByDeveloperId(userId);
+        } else if (role.equals(Role.ROLE_MANAGER)) {
+            userTasks = taskRepository.findAllByManagerId(userId);
+        }
+        return StreamSupport.stream(userTasks.spliterator(), false)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteById(Integer id) {
+        crudRepository.deleteById(id);
     }
 
     private void fetchTaskData(Task task) {
@@ -59,13 +84,13 @@ public class TaskServiceImpl
     private User fetchUser(User user) {
         log.info("Fetching user data form {}", user);
         return userRepository.findByName(user.getName())
-                .orElseThrow(() -> new BusinessLayerException("USER DOES NOT EXIST"));
+                .orElseThrow(() -> new NotFoundException("application.tasks.staff.notFound"));
     }
 
     private Project fetchProject(Project project) {
         log.info("Fetching manager data form {}", project);
         return projectRepository.findByName(project.getName())
-                .orElseThrow(() -> new BusinessLayerException("PROJECT DOES NOT EXIST"));
+                .orElseThrow(() -> new NotFoundException("application.tasks.project.notFound"));
     }
 
 }

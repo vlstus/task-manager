@@ -1,7 +1,6 @@
 package com.study.taskmanagement.model.project;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerator;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.study.taskmanagement.model.BaseEntity;
 import com.study.taskmanagement.model.user.User;
@@ -10,12 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -24,9 +18,6 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @Entity
 @Table(name = "tasks")
-@JsonIdentityInfo(
-        generator = ObjectIdGenerators.IntSequenceGenerator.class
-)
 public class Task
         extends BaseEntity {
 

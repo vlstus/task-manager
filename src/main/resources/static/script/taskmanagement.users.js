@@ -1,13 +1,30 @@
-const userAjaxUrl = "/api/v1/users";
-
 $(document).ready(function () {
-    makeEditable(userAjaxUrl, {
+
+    const userAjaxUrl = "/api/v1/users";
+
+    const ctx = {
+        dataTableUrl: userAjaxUrl,
+        putUrl: userAjaxUrl,
+        postUrl: userAjaxUrl,
+        deleteUrl: userAjaxUrl,
+        getByIdUrl: userAjaxUrl,
+
+        datatableId: "#dataTable",
+        detailsFormId: "#detailsForm",
+        editRowId: "#editRow",
+
+        updFormCallback: function () {
+            $.get(userAjaxUrl, updateTableByData);
+        }
+    }
+
+    makeEditable(ctx, {
         "columns": [
             {
                 data: "name"
             },
             {
-                data: "password"
+                render: renderPassword
             },
             {
                 data: "role"
@@ -19,8 +36,10 @@ $(document).ready(function () {
                 render: renderDeleteBtn
             }
         ]
-    },
-    function () {
-            $.get(userAjaxUrl, updateTableByData);
-        });
+    })
 });
+
+
+function renderPassword(data, type, row) {
+    return "ENCRYPTED";
+}
