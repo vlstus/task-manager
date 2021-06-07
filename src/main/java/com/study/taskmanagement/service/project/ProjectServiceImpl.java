@@ -5,7 +5,7 @@ import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.project.ProjectRepository;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
-import com.study.taskmanagement.service.exception.BusinessLayerException;
+import com.study.taskmanagement.service.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +51,7 @@ public class ProjectServiceImpl
     private User fetchManager(User manager) {
         log.info("Fetching manager data form {}", manager);
         return userRepository.findByName(manager.getName())
-                .orElseThrow(() -> new BusinessLayerException("MANAGER NOT EXIST"));
+                .orElseThrow(() -> new NotFoundException("application.projects.manager.notFound"));
     }
 
 }

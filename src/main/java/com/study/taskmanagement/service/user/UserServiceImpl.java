@@ -4,7 +4,7 @@ import com.study.taskmanagement.model.user.Role;
 import com.study.taskmanagement.model.user.User;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
-import com.study.taskmanagement.service.exception.BusinessLayerException;
+import com.study.taskmanagement.service.exception.NotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -37,7 +37,7 @@ public class UserServiceImpl
     public User getByName(String name) {
         log.info("Getting user with name {}", name);
         return ((UserRepository) crudRepository).findByName(name)
-                .orElseThrow(() -> new BusinessLayerException(String.format("User with %s not found", name)));
+                .orElseThrow(() -> new NotFoundException("application.users.notFound"));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class UserServiceImpl
     private void prepareToSave(User user) {
         if (user.getPassword() == null || user.getPassword().isEmpty()) {
             final User existingUser = crudRepository.findById(user.getId())
-                    .orElseThrow(BusinessLayerException::new);
+                    .orElseThrow(() -> new NotFoundException("application.users.notFound"));
             user.setPassword(existingUser.getPassword());
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
