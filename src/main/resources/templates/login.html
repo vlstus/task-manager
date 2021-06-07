@@ -1,9 +1,9 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html>
-
 <head>
-    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>Authentication</title>
+    <meta charset="UTF-8">
+    <title th:text="#{application.authentication}">Authentication</title>
 </head>
 
 <body>
@@ -15,5 +15,9 @@
 </form>
 
 </body>
+
+<footer>
+    <th:block th:include="fragments/footer.html :: footer"/>
+</footer>
 
 </html>

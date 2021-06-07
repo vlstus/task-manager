@@ -8,7 +8,7 @@
     <script sec:authorize="hasRole('ADMIN')" th:src="@{/script/taskmanagement.projects.js}" rel="script"></script>
     <script sec:authorize="hasRole('MANAGER')" th:src="@{/script/taskmanagement.profile.projects.js}"
             rel="script"></script>
-    <title th:text="#{app.projects.list}">Projects List</title>
+    <title th:text="#{application.projects.list}">Projects List</title>
 
 </head>
 
@@ -18,15 +18,15 @@
 
 <div class="jumbotron pt-4">
     <div class="container">
-        <h3 class="text-center">Projects</h3>
-        <button class="btn btn-success" onclick="add()">Add</button>
+        <h3 class="text-center" th:text="#{application.projects.list}">Projects</h3>
+        <button class="btn btn-success" onclick="add()" th:text="#{application.common.add}">Add</button>
         <table id="dataTable" class="table table-striped">
             <thead>
             <tr>
-                <th>Name</th>
-                <th sec:authorize="hasRole('ADMIN')">Manager</th>
-                <th></th>
-                <th></th>
+                <th th:text="#{application.projects.name}">Name</th>
+                <th sec:authorize="hasRole('ADMIN')" th:text="#{application.projects.manager}">Manager</th>
+                <th th:text="#{application.common.edit}"></th>
+                <th th:text="#{application.common.delete}"></th>
                 <th></th>
             </tr>
             </thead>
