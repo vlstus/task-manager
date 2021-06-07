@@ -8,7 +8,7 @@ import com.study.taskmanagement.repository.project.ProjectRepository;
 import com.study.taskmanagement.repository.project.TaskRepository;
 import com.study.taskmanagement.repository.user.UserRepository;
 import com.study.taskmanagement.service.AbstractService;
-import com.study.taskmanagement.service.exception.BusinessLayerException;
+import com.study.taskmanagement.service.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +50,7 @@ public class TaskServiceImpl
     public Task get(Integer id) {
         log.info("Getting entity with id {}", id);
         return ((TaskRepository) crudRepository).findByIdWithStaffIfExists(id)
-                .orElseThrow(BusinessLayerException::new);
+                .orElseThrow(()-> new NotFoundException("application.tasks.notFound"));
     }
 
     @Override
@@ -84,13 +84,13 @@ public class TaskServiceImpl
     private User fetchUser(User user) {
         log.info("Fetching user data form {}", user);
         return userRepository.findByName(user.getName())
-                .orElseThrow(() -> new BusinessLayerException("USER DOES NOT EXIST"));
+                .orElseThrow(() -> new NotFoundException("application.tasks.staff.notFound"));
     }
 
     private Project fetchProject(Project project) {
         log.info("Fetching manager data form {}", project);
         return projectRepository.findByName(project.getName())
-                .orElseThrow(() -> new BusinessLayerException("PROJECT DOES NOT EXIST"));
+                .orElseThrow(() -> new NotFoundException("application.tasks.project.notFound"));
     }
 
 }

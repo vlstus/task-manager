@@ -37,7 +37,7 @@ public abstract class AbstractService<T extends BaseEntity, ID>
                 !(entity.getId().equals(entityId)) ||
                 !crudRepository.existsById(entityId)) {
             log.warn("Failed to update entity {}", entity);
-            throw new NotOwnedException();
+            throw new NotOwnedException("application.business.notOwned");
         }
         return crudRepository.save(entity);
     }
@@ -46,7 +46,7 @@ public abstract class AbstractService<T extends BaseEntity, ID>
     public T get(ID id) {
         log.info("Getting entity with id {}", id);
         return crudRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException());
+                .orElseThrow(() -> new NotFoundException("application.business.notFound"));
     }
 
     @Override

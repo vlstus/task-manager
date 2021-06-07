@@ -1,24 +1,13 @@
 package com.study.taskmanagement.service.exception;
 
-import org.springframework.context.MessageSourceResolvable;
-
 public class NotFoundException
-        extends BusinessLayerException
-        implements MessageSourceResolvable {
+        extends BusinessLayerException {
 
-    public NotFoundException() {
+    public NotFoundException(String... messageCodes) {
+        super(messageCodes);
     }
 
-    public NotFoundException(String message) {
-        super(message);
-    }
-
-    public NotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    @Override
-    public String[] getCodes() {
-        return new String[]{"application.business.notFound"};
+    public NotFoundException(Throwable cause, String... messageCodes) {
+        super(cause, messageCodes);
     }
 }
