@@ -11,29 +11,28 @@ import java.util.Optional;
 public interface TaskRepository
         extends CrudRepository<Task, Integer> {
 
-    @Query(
-            value = "SELECT " +
-                    "task.id ," +
-                    "task.name ," +
-                    "task.manager_id ," +
-                    "task.developer_id ," +
-                    "task.project_id ," +
-                    "task.status ," +
-                    "FROM tasks task " +
-                    "LEFT JOIN " +
-                    "users user " +
-                    "ON task.manager_id = user.id OR task.developer_id = user.id " +
-                    "LEFT JOIN " +
-                    "projects project " +
-                    "ON task.project_id = project.id " +
-                    "WHERE " +
-                    "task.id = ?1",
-            nativeQuery = true
-    )
-    Optional<Task> findByIdWithStaffIfExists(Integer id);
-
     Iterable<Task> findAllByDeveloperId(Integer developerId);
 
     Iterable<Task> findAllByManagerId(Integer managerId);
+
+    @Query(
+            value = """
+                    SELECT
+                        tsk.id ,
+                        tsk.name ,
+                        tsk.manager_id ,
+                        tsk.project_id ,
+                        tsk.developer_id ,
+                        tsk.status
+                    FROM tasks tsk
+                    LEFT JOIN users usr
+                        ON tsk.manager_id = usr.id OR tsk.developer_id = usr.id
+                    LEFT JOIN projects prj
+                        ON tsk.project_id = prj.id
+                    WHERE tsk.id = ?1
+                    """,
+            nativeQuery = true
+    )
+    Optional<Task> findByIdWithStaffIfExists(Integer id);
 
 }

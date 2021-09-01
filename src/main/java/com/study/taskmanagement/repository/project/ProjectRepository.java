@@ -14,20 +14,20 @@ public interface ProjectRepository
     Optional<Project> findByName(String name);
 
     @Query(
-            value = "SELECT " +
-                    "project.id ," +
-                    "project.manager_id ," +
-                    "project.name ," +
-                    "user.name ," +
-                    "user.password ," +
-                    "user.role " +
-                    "FROM " +
-                    "projects project " +
-                    "LEFT JOIN " +
-                    "users user " +
-                    "ON project.manager_id=user.id " +
-                    "WHERE " +
-                    "project.id = ?1",
+            value = """
+                    SELECT
+                        prj.id ,
+                        prj.manager_id ,
+                        prj.name ,
+                        usr.name ,
+                        usr.password ,
+                        usr.role
+                    FROM
+                        projects prj
+                    LEFT JOIN users usr
+                        ON project.manager_id=usr.id
+                    WHERE project.id = ?1
+                    """,
             nativeQuery = true
     )
     Optional<Project> findByIdWithManagerIfExists(Integer id);
