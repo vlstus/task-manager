@@ -42,7 +42,7 @@ public class UserControllerTest
     @Test
     void createTest()
             throws Exception {
-        final User user = new User("NewUser", "Pass", Role.ROLE_ADMIN);
+        final User user = new User("NewUser", "Password", Role.ROLE_ADMIN);
         final MvcResult mvcResult = mockMvc.perform(post("/api/v1/users/")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
