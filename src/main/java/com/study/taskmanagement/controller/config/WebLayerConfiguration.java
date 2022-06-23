@@ -1,5 +1,7 @@
 package com.study.taskmanagement.controller.config;
 
+import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.study.taskmanagement.controller.interceptor.UserAuthenticationAddingHandleInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -13,7 +15,7 @@ import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @Configuration
-public class WebConfigurer
+public class WebLayerConfiguration
         implements WebMvcConfigurer {
 
     @Autowired
@@ -40,6 +42,11 @@ public class WebConfigurer
     @Autowired
     public MessageSourceAccessor messageSourceAccessor(MessageSource messageSource) {
         return new MessageSourceAccessor(messageSource);
+    }
+
+    @Bean
+    public Module hibernateLazyProxyModule() {
+        return new Hibernate5Module();
     }
 
 }

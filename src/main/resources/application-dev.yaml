@@ -1,11 +1,11 @@
 spring:
   datasource:
-    url: 'jdbc:postgresql://localhost:5433/task_management'
-    driver-class-name: 'org.postgresql.Driver'
-    username: 'postgres'
-    password: 'postgres'
+    url: 'jdbc:h2:mem:task_management'
+    driver-class-name: 'org.h2.Driver'
+    username: 'sa'
+    password: 'password'
     data: 'classpath*:database/data.sql'
-    schema: 'classpath*:database/schema_postgres.sql'
+    schema: 'classpath*:database/schema_h2.sql'
     initialization-mode: always
   jpa:
     show-sql: true

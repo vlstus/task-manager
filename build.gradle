@@ -43,8 +43,11 @@ dependencies {
     testImplementation 'org.skyscreamer:jsonassert'
     implementation 'org.springframework.security:spring-security-test'
 
-    testImplementation 'com.h2database:h2'
-    implementation 'org.postgresql:postgresql:42.2.23'
+    implementation 'com.h2database:h2'
+    runtimeOnly 'org.postgresql:postgresql:42.2.23'
+
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.4'
+
 }
 
 test {
