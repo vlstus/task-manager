@@ -1,6 +1,9 @@
 package com.study.taskmanagement.controller.config;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.hibernate5.Hibernate5Module;
 import com.study.taskmanagement.controller.interceptor.UserAuthenticationAddingHandleInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +50,13 @@ public class WebLayerConfiguration
     @Bean
     public Module hibernateLazyProxyModule() {
         return new Hibernate5Module();
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        final var objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        return objectMapper;
     }
 
 }

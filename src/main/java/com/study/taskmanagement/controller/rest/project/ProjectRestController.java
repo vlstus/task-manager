@@ -1,6 +1,8 @@
 package com.study.taskmanagement.controller.rest.project;
 
 import com.study.taskmanagement.controller.rest.AbstractRestController;
+import com.study.taskmanagement.controller.rest.MappingService;
+import com.study.taskmanagement.dto.project.ProjectDTO;
 import com.study.taskmanagement.model.project.Project;
 import com.study.taskmanagement.service.project.ProjectService;
 import org.springframework.http.HttpStatus;
@@ -16,16 +18,17 @@ import java.util.Collection;
 @RequestMapping("/api/v1/projects")
 @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
 public class ProjectRestController
-        extends AbstractRestController<Project, Integer> {
+        extends AbstractRestController<Project, ProjectDTO, Integer> {
 
-    protected ProjectRestController(ProjectService projectService) {
-        super(projectService);
+    public ProjectRestController(final ProjectService projectService,
+                                    final MappingService<Project, ProjectDTO> mappingService) {
+        super(projectService, mappingService);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<Collection<Project>> getAll() {
+    public ResponseEntity<Collection<ProjectDTO>> getAll() {
         return super.getAll();
     }
 
@@ -33,7 +36,7 @@ public class ProjectRestController
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<Project> getById(@PathVariable Integer id) {
+    public ResponseEntity<ProjectDTO> getById(@PathVariable final Integer id) {
         return super.getById(id);
     }
 
@@ -41,7 +44,7 @@ public class ProjectRestController
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<Project> create(@Valid @RequestBody Project project) {
+    public ResponseEntity<ProjectDTO> create(@Valid @RequestBody final ProjectDTO project) {
         return super.create(project);
     }
 
@@ -52,14 +55,14 @@ public class ProjectRestController
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Override
-    public void update(@Valid @RequestBody Project entity, @PathVariable Integer id) {
-        super.update(entity, id);
+    public void update(@Valid @RequestBody final ProjectDTO project, @PathVariable final Integer id) {
+        super.update(project, id);
     }
 
     @DeleteMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Override
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable final Integer id) {
         super.delete(id);
     }
 

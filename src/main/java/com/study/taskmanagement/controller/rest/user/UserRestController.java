@@ -1,7 +1,8 @@
 package com.study.taskmanagement.controller.rest.user;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.taskmanagement.controller.rest.AbstractRestController;
+import com.study.taskmanagement.controller.rest.MappingService;
+import com.study.taskmanagement.dto.user.UserDTO;
 import com.study.taskmanagement.model.project.Project;
 import com.study.taskmanagement.model.project.Task;
 import com.study.taskmanagement.model.user.Role;
@@ -11,7 +12,6 @@ import com.study.taskmanagement.service.exception.NotOwnedException;
 import com.study.taskmanagement.service.project.ProjectService;
 import com.study.taskmanagement.service.task.TaskService;
 import com.study.taskmanagement.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,36 +25,39 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @RestController
 @RequestMapping("/api/v1/users")
 @PreAuthorize("hasRole('ADMIN')")
 class UserRestController
-        extends AbstractRestController<User, Integer> {
+        extends AbstractRestController<User, UserDTO, Integer> {
 
     private final ProjectService projectService;
     private final TaskService taskService;
 
-    @Autowired
-    ObjectMapper objectMapper;
-
-    protected UserRestController(UserService userService,
-                                 ProjectService projectService,
-                                 TaskService taskService) {
-        super(userService);
+    public UserRestController(final UserService userService,
+                                 final ProjectService projectService,
+                                 final TaskService taskService,
+                                 final MappingService<User, UserDTO> mappingService) {
+        super(userService, mappingService);
         this.projectService = projectService;
         this.taskService = taskService;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','MANAGER')")
     @GetMapping(params = {"role"})
-    public List<User> getByRole(@RequestParam("role") Role role) {
-        UserService userService = (UserService) crudService;
-        return new ArrayList<>(userService.getByRole(role));
+    public List<UserDTO> getByRole(@RequestParam("role") final Role role) {
+        final UserService userService = (UserService) crudService;
+        return userService.getByRole(role)
+                .stream()
+                .map(mappingService::convertToTransferObject)
+                .collect(toList());
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<Collection<User>> getAll() {
+    public ResponseEntity<Collection<UserDTO>> getAll() {
         return super.getAll();
     }
 
@@ -63,7 +66,7 @@ class UserRestController
             path = "/{id}",
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<User> getById(@PathVariable Integer id) {
+    public ResponseEntity<UserDTO> getById(@PathVariable final Integer id) {
         return super.getById(id);
     }
 
@@ -71,8 +74,8 @@ class UserRestController
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<User> create(@Valid @RequestBody User entity) {
-        return super.create(entity);
+    public ResponseEntity<UserDTO> create(@Valid @RequestBody final UserDTO transferObject) {
+        return super.create(transferObject);
     }
 
     @PutMapping(
@@ -82,7 +85,7 @@ class UserRestController
     )
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Override
-    public void update(@Valid @RequestBody User entity, @PathVariable Integer id) {
+    public void update(@Valid @RequestBody final UserDTO entity, @PathVariable final Integer id) {
         super.update(entity, id);
     }
 
@@ -90,27 +93,27 @@ class UserRestController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     @Override
-    public void delete(@PathVariable Integer id) {
+    public void delete(@PathVariable final Integer id) {
         super.delete(id);
     }
 
     @PreAuthorize("hasRole('MANAGER')")
     @GetMapping(path = "/{userId}/projects")
-    public ResponseEntity<List<Project>> getProjects(@PathVariable Integer userId,
-                                                     @AuthenticationPrincipal UserDetailsImpl loggedUser) {
+    public ResponseEntity<List<Project>> getProjects(@PathVariable final Integer userId,
+                                                     @AuthenticationPrincipal final UserDetailsImpl loggedUser) {
         checkIfOwn(userId, loggedUser);
         return ResponseEntity.ok(new ArrayList<>(projectService.getAllByUserId(userId)));
     }
 
     @PreAuthorize("hasAnyRole('DEVELOPER','MANAGER')")
     @GetMapping(path = "/{userId}/tasks")
-    public ResponseEntity<List<Task>> getTasks(@PathVariable Integer userId,
-                                               @AuthenticationPrincipal UserDetailsImpl loggedUser) {
+    public ResponseEntity<List<Task>> getTasks(@PathVariable final Integer userId,
+                                               @AuthenticationPrincipal final UserDetailsImpl loggedUser) {
         checkIfOwn(userId, loggedUser);
         return ResponseEntity.ok(new ArrayList<>(taskService.getAllByUser(userId, loggedUser.getUser().getRole())));
     }
 
-    private void checkIfOwn(Integer userId, UserDetailsImpl loggedUser) {
+    private void checkIfOwn(final Integer userId, final UserDetailsImpl loggedUser) {
         if (!userId.equals(loggedUser.getUser().getId())) {
             throw new NotOwnedException("Requested user id is not consistent with logged user id");
         }

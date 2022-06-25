@@ -1,6 +1,8 @@
 package com.study.taskmanagement.controller.rest.task;
 
 import com.study.taskmanagement.controller.rest.AbstractRestController;
+import com.study.taskmanagement.controller.rest.MappingService;
+import com.study.taskmanagement.dto.task.TaskDTO;
 import com.study.taskmanagement.model.project.Task;
 import com.study.taskmanagement.service.CrudService;
 import com.study.taskmanagement.service.task.TaskService;
@@ -17,16 +19,17 @@ import java.util.Collection;
 @RequestMapping("/api/v1/tasks")
 @PreAuthorize("hasRole('MANAGER') or hasRole('ADMIN')")
 public class TaskRestController
-        extends AbstractRestController<Task, Integer> {
+        extends AbstractRestController<Task, TaskDTO, Integer> {
 
-    protected TaskRestController(CrudService<Task, Integer> crudService) {
-        super(crudService);
+    public TaskRestController(final CrudService<Task, Integer> crudService,
+                              final MappingService<Task, TaskDTO> mappingService) {
+        super(crudService, mappingService);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public ResponseEntity<Collection<Task>> getAll() {
+    public ResponseEntity<Collection<TaskDTO>> getAll() {
         return super.getAll();
     }
 
@@ -35,7 +38,7 @@ public class TaskRestController
             produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')")
     @Override
-    public ResponseEntity<Task> getById(@PathVariable Integer id) {
+    public ResponseEntity<TaskDTO> getById(@PathVariable final Integer id) {
         return super.getById(id);
     }
 
@@ -43,8 +46,8 @@ public class TaskRestController
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     @Override
-    public ResponseEntity<Task> create(@Valid @RequestBody Task entity) {
-        return super.create(entity);
+    public ResponseEntity<TaskDTO> create(@Valid @RequestBody final TaskDTO transferObject) {
+        return super.create(transferObject);
     }
 
     @PutMapping(
@@ -55,8 +58,8 @@ public class TaskRestController
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('MANAGER') or hasRole('DEVELOPER') or hasRole('ADMIN')")
     @Override
-    public void update(@Valid @RequestBody Task entity, @PathVariable Integer id) {
-        super.update(entity, id);
+    public void update(@Valid @RequestBody TaskDTO transferObject, @PathVariable final Integer id) {
+        super.update(transferObject, id);
     }
 
     @DeleteMapping(path = "/{id}")

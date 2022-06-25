@@ -33,7 +33,7 @@ public class Project
     @Length(min = 5, max = 50)
     private String name;
     @ManyToOne(
-            fetch = FetchType.LAZY
+            fetch = FetchType.EAGER
     )
     @NotFound(
             action = NotFoundAction.IGNORE
@@ -44,7 +44,7 @@ public class Project
     )
     @NotNull
     private User manager;
-    @OneToMany(mappedBy = "project")
+    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
     @JsonIgnore
     private List<Task> tasks;
 

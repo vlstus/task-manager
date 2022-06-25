@@ -24,18 +24,18 @@ public class Task
     @NotEmpty
     @Length(min = 5, max = 50)
     private String name;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "manager_id")
     @NotNull
     private User manager;
     @Enumerated(EnumType.STRING)
     @NotNull
     private Status status;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "developer_id")
     @NotNull
     private User developer;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id")
     @NotNull
     private Project project;
